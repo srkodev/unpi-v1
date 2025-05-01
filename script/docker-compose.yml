@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # PHP Web Application
+  web:
+    build:
+      context: ..
+      dockerfile: script/Dockerfile.web
+    container_name: fdpci_web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ../:/var/www/html
+      - ./db-test.php:/var/www/html/public/db-test.php
+      - ./docker-config.php:/var/www/html/app/config/config.php
+      - ./site-url.php:/var/www/html/public/site-url.php
+      - ./add-admin.php:/var/www/html/add-admin.php
+      - ./fix-permissions.sh:/var/www/html/fix-permissions.sh
+      - ./add-docker-permissions.php:/var/www/html/public/fix-permissions.php
+    depends_on:
+      - db
+    networks:
+      - fdpci_network
+    environment:
+      - DB_HOST=db
+      - DB_USER=fdpci_user
+      - DB_PASSWORD=ChangeMe#2025
+      - DB_NAME=fdpci
+
+  # MySQL Database
+  db:
+    build:
+      context: ..
+      dockerfile: script/Dockerfile.db
+    container_name: fdpci_db
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../database:/docker-entrypoint-initdb.d
+    networks:
+      - fdpci_network
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_USER=fdpci_user
+      - MYSQL_PASSWORD=ChangeMe#2025
+      - MYSQL_DATABASE=fdpci
+
+  # Service d'initialisation
+  init:
+    image: script-web:latest
+    container_name: fdpci_init
+    depends_on:
+      - web
+      - db
+    networks:
+      - fdpci_network
+    volumes:
+      - ./add-admin.php:/var/www/html/add-admin.php
+      - ./fix-permissions.sh:/var/www/html/fix-permissions.sh
+      - ./add-docker-permissions.php:/var/www/html/add-docker-permissions.php
+    command: >
+      bash -c "
+        echo 'Attente du démarrage complet de la base de données...' &&
+        sleep 10 &&
+        echo 'Correction des permissions des répertoires...' &&
+        php /var/www/html/add-docker-permissions.php &&
+        echo 'Création/mise à jour du compte administrateur...' &&
+        php /var/www/html/add-admin.php &&
+        echo 'Initialisation terminée.'
+      "
+    restart: "no"
+
+networks:
+  fdpci_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local 

@@ -1,0 +1,16 @@
+FROM mysql:8.0
+
+# Custom MySQL configuration
+COPY script/my.cnf /etc/mysql/conf.d/
+
+# Set default authentication plugin to mysql_native_password
+RUN echo "[mysqld]" >> /etc/mysql/conf.d/docker.cnf
+RUN echo "default_authentication_plugin=mysql_native_password" >> /etc/mysql/conf.d/docker.cnf
+
+# The SQL script in ../database will be automatically executed on startup
+# because we're mounting it to /docker-entrypoint-initdb.d/ in docker-compose.yml
+
+# Custom configuration for character set
+ENV LANG=C.UTF-8
+
+EXPOSE 3306 
