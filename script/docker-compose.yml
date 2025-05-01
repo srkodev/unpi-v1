@@ -1,15 +1,18 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  # PHP Web Application
+  # Application PHP
   web:
     build:
       context: ..
       dockerfile: script/Dockerfile.web
     container_name: fdpci_web
     restart: unless-stopped
+
+    # Le port 80 du conteneur n’est accessible qu’en local
     ports:
-      - "8080:80"
+      - "127.0.0.1:8080:80"
+
     volumes:
       - ../:/var/www/html
       - ./db-test.php:/var/www/html/public/db-test.php
@@ -28,15 +31,13 @@ services:
       - DB_PASSWORD=ChangeMe#2025
       - DB_NAME=fdpci
 
-  # MySQL Database
+  # MySQL (non exposé)
   db:
     build:
       context: ..
       dockerfile: script/Dockerfile.db
     container_name: fdpci_db
     restart: unless-stopped
-    ports:
-      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ../database:/docker-entrypoint-initdb.d
@@ -48,7 +49,7 @@ services:
       - MYSQL_PASSWORD=ChangeMe#2025
       - MYSQL_DATABASE=fdpci
 
-  # Service d'initialisation
+  # Service d’init (inchangé)
   init:
     image: script-web:latest
     container_name: fdpci_init
@@ -79,4 +80,4 @@ networks:
 
 volumes:
   mysql_data:
-    driver: local 
+    driver: local
