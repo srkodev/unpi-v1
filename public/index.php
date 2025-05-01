@@ -9,9 +9,9 @@ require_once __DIR__ . '/../app/config/helpers.php';
 require_once __DIR__ . '/../app/controller/ActualiteController.php';
 
 // Import des contrôleurs nécessaires
-use App\Controller\ActualiteController;
-use App\Controller\BienController;
-use App\Controller\PartenaireController;
+use app\controller\ActualiteController;
+use app\controller\BienController;
+use app\controller\PartenaireController;
 
 // Récupération de l'URL sans les paramètres
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
