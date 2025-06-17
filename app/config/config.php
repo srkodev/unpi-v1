@@ -27,7 +27,7 @@ try {
 }
 
 // Injection dans les modèles
-\app\models\BaseModel::init(DB_HOST, DB_NAME, DB_USER, DB_PASS);
+\App\Models\BaseModel::init(DB_HOST, DB_NAME, DB_USER, DB_PASS);
 
 // Rendre $pdo global
 global $pdo;

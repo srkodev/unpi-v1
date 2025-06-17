@@ -1726,7 +1726,6 @@ img {
 .bien-detail {
     padding: var(--spacing-xl) 0;
     background: var(--white);
-    margin-top: 60px;
 }
 
 .swiper {

@@ -14,30 +14,32 @@
                 </div>
                 <div class="footer-section">
                     <h3>Liens rapides</h3>
-                    <p><a href="/index.php/biens"><i class="fas fa-home"></i> Biens immobiliers</a></p>
-                    <p><a href="/index.php/actualites"><i class="fas fa-newspaper"></i> Actualités</a></p>
-                    <p><a href="/index.php/adhesion"><i class="fas fa-user-plus"></i> Adhésion</a></p>
+                    <p><a href="/public/biens"><i class="fas fa-home"></i> Biens immobiliers</a></p>
+                    <p><a href="/public/actualites"><i class="fas fa-newspaper"></i> Actualités</a></p>
+                    <p><a href="/public/adhesion"><i class="fas fa-user-plus"></i> Adhésion</a></p>
                 </div>
                 <div class="footer-section">
                     <h3>Suivez-nous</h3>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/fdcpi" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://www.instagram.com/fdcpi" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-instagram"></i>
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2024 FDPCI - Tous droits réservés</p>
                 <div class="footer-links">
-                    <a href="/index.php/mentions-legales">
+                    <a href="/public/mentions-legales">
                         <i class="fas fa-gavel"></i> Mentions légales
                     </a>
-                    <a href="/index.php/contact">
+                    <a href="/public/contact">
                         <i class="fas fa-envelope"></i> Contact
                     </a>
-                    <a href="/index.php/admin/login">
+                    <a href="/public/admin/login">
                         <i class="fas fa-lock"></i> Administration
                     </a>
                 </div>
@@ -45,6 +47,6 @@
         </div>
     </footer>
 
-    <script src="/js/main.js"></script>
+    <script src="/public/js/main.js"></script>
 </body>
 </html> 

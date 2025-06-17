@@ -5,18 +5,13 @@ require_once __DIR__ . '/../../../app/config/config.php';
 
 use App\Controller\AdminController;
 use App\Controller\AdminActualiteController;
-use App\Models\Actualite;
 
 // Vérification de l'authentification
 $adminController = new AdminController();
 $adminController->requireLogin();
 
 $controller = new AdminActualiteController();
-$controller->index();
-
-// Récupération de toutes les actualités
-$actualite = new Actualite();
-$actualites = $actualite->getAll();
+$actualites = $controller->index();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -70,7 +65,7 @@ $actualites = $actualite->getAll();
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="/index.php/admin/actualites/liste_actualites">
+                            <a class="nav-link active" href="/index.php/admin/actualites">
                                 <i class="bi bi-newspaper"></i> Actualités
                             </a>
                         </li>
@@ -96,6 +91,24 @@ $actualites = $actualite->getAll();
                         <i class="bi bi-plus"></i> Nouvelle actualité
                     </a>
                 </div>
+
+                <?php if (isset($_SESSION['success'])): ?>
+                <div class="alert alert-success">
+                    <?php 
+                    echo htmlspecialchars($_SESSION['success']);
+                    unset($_SESSION['success']);
+                    ?>
+                </div>
+                <?php endif; ?>
+
+                <?php if (isset($_SESSION['error'])): ?>
+                <div class="alert alert-danger">
+                    <?php 
+                    echo htmlspecialchars($_SESSION['error']);
+                    unset($_SESSION['error']);
+                    ?>
+                </div>
+                <?php endif; ?>
 
                 <div class="card">
                     <div class="card-body">

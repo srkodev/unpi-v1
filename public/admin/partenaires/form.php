@@ -36,15 +36,23 @@ if (isset($_GET['id'])) {
 
 // Form Processing
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ($isEdit) {
-        $id = (int)$_GET['id'];
-        $controller->edit($id);
-        // We shouldn't get here if successful (controller should redirect)
-        $error = "Une erreur est survenue lors de la mise à jour du partenaire.";
-    } else {
-        $controller->create();
-        // We shouldn't get here if successful (controller should redirect)
-        $error = "Une erreur est survenue lors de la création du partenaire.";
+    $data = [
+        'nom' => $_POST['nom'] ?? '',
+        'description' => $_POST['description'] ?? '',
+        'logo_url' => $_POST['logo_url'] ?? '',
+        'site_url' => $_POST['site_url'] ?? ''
+    ];
+
+    try {
+        if ($isEdit) {
+            Partenaire::update($id, $data);
+        } else {
+            Partenaire::create($data);
+        }
+        header('Location: /index.php/admin/partenaires');
+        exit;
+    } catch (Exception $e) {
+        $error = "Une erreur est survenue : " . $e->getMessage();
     }
 }
 ?>
@@ -74,6 +82,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .main-content {
             padding: 20px;
+        }
+        .form-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .form-section h4 {
+            color: #343a40;
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -137,29 +155,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="card-body">
                         <form method="POST" enctype="multipart/form-data" action="">
                             <!-- Champs du formulaire -->
-                            <div class="mb-3">
-                                <label for="nom" class="form-label">Nom du partenaire</label>
-                                <input type="text" class="form-control" id="nom" name="nom" required
-                                       value="<?php echo $isEdit ? htmlspecialchars($partenaire['nom']) : ''; ?>">
-                            </div>
+                            <div class="form-section">
+                                <div class="mb-3">
+                                    <label for="nom" class="form-label">Nom *</label>
+                                    <input type="text" class="form-control" id="nom" name="nom" required
+                                           value="<?php echo htmlspecialchars($partenaire['nom'] ?? ''); ?>">
+                                </div>
 
-                            <div class="mb-3">
-                                <label for="logo" class="form-label">Logo du partenaire</label>
-                                <input type="file" class="form-control" id="logo" name="logo" accept="image/*">
-                                <div class="form-text">Formats acceptés: JPG, PNG, GIF, WEBP. Taille max: 2MB.</div>
-                                <?php if ($isEdit && !empty($partenaire['logo_url'])): ?>
-                                    <div class="mt-2">
-                                        <p>Logo actuel :</p>
-                                        <img src="/<?php echo htmlspecialchars($partenaire['logo_url']); ?>" alt="Logo actuel" style="max-height: 100px;">
-                                        <input type="hidden" name="existing_logo" value="<?php echo htmlspecialchars($partenaire['logo_url']); ?>">
-                                    </div>
-                                <?php endif; ?>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="4"><?php echo htmlspecialchars($partenaire['description'] ?? ''); ?></textarea>
+                                    <div class="form-text">Description du partenaire et de ses services.</div>
+                                </div>
 
-                            <div class="mb-3">
-                                <label for="site_url" class="form-label">URL du site web</label>
-                                <input type="url" class="form-control" id="site_url" name="site_url"
-                                       value="<?php echo $isEdit ? htmlspecialchars($partenaire['site_url']) : ''; ?>">
+                                <div class="mb-3">
+                                    <label for="logo" class="form-label">Logo du partenaire</label>
+                                    <input type="file" class="form-control" id="logo" name="logo" accept="image/*">
+                                    <div class="form-text">Formats acceptés: JPG, PNG, GIF, WEBP. Taille max: 2MB.</div>
+                                    <?php if ($isEdit && !empty($partenaire['logo_url'])): ?>
+                                        <div class="mt-2">
+                                            <p>Logo actuel :</p>
+                                            <img src="/<?php echo htmlspecialchars($partenaire['logo_url']); ?>" alt="Logo actuel" style="max-height: 100px;">
+                                            <input type="hidden" name="existing_logo" value="<?php echo htmlspecialchars($partenaire['logo_url']); ?>">
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="site_url" class="form-label">URL du site web</label>
+                                    <input type="url" class="form-control" id="site_url" name="site_url"
+                                           value="<?php echo htmlspecialchars($partenaire['site_url'] ?? ''); ?>">
+                                </div>
                             </div>
 
                             <div class="text-end">

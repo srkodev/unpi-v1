@@ -7,28 +7,45 @@ require_once __DIR__ . '/../../../app/config/config.php';
 
 use App\Controller\AdminController;
 use App\Controller\AdminActualiteController;
+use App\Models\Actualite;
 
 // Vérification de l'authentification
 $adminController = new AdminController();
 $adminController->requireLogin();
 
-// Log des données POST
-error_log("Données POST reçues: " . print_r($_POST, true));
-error_log("Données FILES reçues: " . print_r($_FILES, true));
-
 $controller = new AdminActualiteController();
-$isEdit = isset($actualite);
-$title = $isEdit ? 'Modifier une actualité' : 'Nouvelle actualité';
+$actualite = null;
+$isEdit = false;
+
+// Determine if we're in edit mode and get the actualite
+if (isset($_GET['id'])) {
+    $isEdit = true;
+    $id = (int)$_GET['id'];
+    $actualite = $controller->edit($id);
+    
+    if (!$actualite) {
+        header('Location: /index.php/admin/actualites');
+        exit;
+    }
+}
+
+// Form Processing
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($isEdit) {
+        $controller->edit($id);
+    } else {
+        $controller->create();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration - <?php echo $title; ?></title>
+    <title>Administration - <?php echo $isEdit ? 'Modifier' : 'Ajouter'; ?> une actualité</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
     <style>
         .sidebar {
             min-height: 100vh;
@@ -48,10 +65,15 @@ $title = $isEdit ? 'Modifier une actualité' : 'Nouvelle actualité';
         .main-content {
             padding: 20px;
         }
-        .image-preview {
-            max-width: 200px;
-            max-height: 200px;
-            margin: 10px;
+        .form-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .form-section h4 {
+            color: #343a40;
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -78,7 +100,7 @@ $title = $isEdit ? 'Modifier une actualité' : 'Nouvelle actualité';
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="/index.php/admin/actualites/liste_actualites">
+                            <a class="nav-link active" href="/index.php/admin/actualites">
                                 <i class="bi bi-newspaper"></i> Actualités
                             </a>
                         </li>
@@ -99,84 +121,93 @@ $title = $isEdit ? 'Modifier une actualité' : 'Nouvelle actualité';
             <!-- Main content -->
             <div class="col-md-9 col-lg-10 main-content">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2><?php echo $title; ?></h2>
-                    <a href="/index.php/admin/actualites/liste_actualites" class="btn btn-secondary">
+                    <h2><?php echo $isEdit ? 'Modifier' : 'Ajouter'; ?> une actualité</h2>
+                    <a href="/index.php/admin/actualites" class="btn btn-secondary">
                         <i class="bi bi-arrow-left"></i> Retour à la liste
                     </a>
                 </div>
 
-                <?php if (isset($error)): ?>
-                    <div class="alert alert-danger">
-                        <?php echo htmlspecialchars($error); ?>
-                    </div>
+                <?php if (isset($_SESSION['error'])): ?>
+                <div class="alert alert-danger">
+                    <?php 
+                    echo htmlspecialchars($_SESSION['error']);
+                    unset($_SESSION['error']);
+                    ?>
+                </div>
                 <?php endif; ?>
 
                 <div class="card">
                     <div class="card-body">
-                        <form method="POST" enctype="multipart/form-data">
-                            <div class="mb-3">
-                                <label for="titre" class="form-label">Titre</label>
-                                <input type="text" class="form-control" id="titre" name="titre" required
-                                    value="<?php echo $isEdit ? htmlspecialchars($actualite['titre']) : ''; ?>">
-                            </div>
+                        <form method="POST" enctype="multipart/form-data" action="">
+                            <!-- Champs du formulaire -->
+                            <div class="form-section">
+                                <div class="mb-3">
+                                    <label for="titre" class="form-label">Titre *</label>
+                                    <input type="text" class="form-control" id="titre" name="titre" required
+                                           value="<?php echo htmlspecialchars($actualite['titre'] ?? ''); ?>">
+                                </div>
 
-                            <div class="mb-3">
-                                <label for="categorie" class="form-label">Catégorie</label>
-                                <select class="form-select" id="categorie" name="categorie" required>
-                                    <option value="">Sélectionnez une catégorie</option>
-                                    <option value="juridique" <?php echo $isEdit && $actualite['categorie'] === 'juridique' ? 'selected' : ''; ?>>Juridique</option>
-                                    <option value="formation" <?php echo $isEdit && $actualite['categorie'] === 'formation' ? 'selected' : ''; ?>>Formation</option>
-                                    <option value="evenement" <?php echo $isEdit && $actualite['categorie'] === 'evenement' ? 'selected' : ''; ?>>Événement</option>
-                                </select>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="categorie" class="form-label">Catégorie</label>
+                                    <select class="form-select" id="categorie" name="categorie" required>
+                                        <option value="">Sélectionnez une catégorie</option>
+                                        <option value="juridique" <?php echo (isset($actualite) && $actualite['categorie'] === 'juridique') ? 'selected' : ''; ?>>Juridique</option>
+                                        <option value="formation" <?php echo (isset($actualite) && $actualite['categorie'] === 'formation') ? 'selected' : ''; ?>>Formation</option>
+                                        <option value="evenement" <?php echo (isset($actualite) && $actualite['categorie'] === 'evenement') ? 'selected' : ''; ?>>Événement</option>
+                                        <option value="autre" <?php echo (isset($actualite) && $actualite['categorie'] === 'autre') ? 'selected' : ''; ?>>Autre</option>
+                                    </select>
+                                </div>
 
-                            <div class="mb-3">
-                                <label for="extrait" class="form-label">Extrait</label>
-                                <textarea class="form-control" id="extrait" name="extrait" rows="3"><?php echo $isEdit ? htmlspecialchars($actualite['extrait']) : ''; ?></textarea>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="contenu" class="form-label">Contenu *</label>
+                                    <textarea class="form-control" id="contenu" name="contenu" rows="10" required><?php echo htmlspecialchars($actualite['contenu'] ?? ''); ?></textarea>
+                                </div>
 
-                            <div class="mb-3">
-                                <label for="contenu" class="form-label">Contenu</label>
-                                <textarea class="form-control" id="contenu" name="contenu" rows="10"><?php echo $isEdit ? htmlspecialchars($actualite['contenu']) : ''; ?></textarea>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="publie_le" class="form-label">Date de publication</label>
+                                    <input type="date" class="form-control" id="publie_le" name="publie_le"
+                                           value="<?php echo htmlspecialchars($actualite['publie_le'] ?? date('Y-m-d')); ?>">
+                                </div>
 
-                            <div class="mb-3">
-                                <label for="publie_le" class="form-label">Date de publication</label>
-                                <input type="date" class="form-control" id="publie_le" name="publie_le"
-                                    value="<?php echo $isEdit ? $actualite['publie_le'] : date('Y-m-d'); ?>">
-                            </div>
+                                <div class="mb-3">
+                                    <label for="images" class="form-label">Images</label>
+                                    <input type="file" class="form-control" id="images" name="images[]" multiple accept="image/jpeg,image/png,image/gif">
+                                    <div class="form-text">Formats acceptés : JPG, PNG, GIF. Taille maximum : 5MB par image.</div>
+                                </div>
 
-                            <div class="mb-3">
-                                <label class="form-label">Images</label>
-                                <div class="row">
-                                    <?php if ($isEdit && !empty($images)): ?>
-                                        <?php foreach ($images as $image): ?>
-                                            <div class="col-md-4 mb-3">
-                                                <div class="card">
-                                                    <img src="<?= htmlspecialchars($image['url']) ?>" class="card-img-top" alt="Image de l'actualité">
-                                                    <div class="card-body">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <a href="/index.php/admin/actualites/set-primary-image/<?= $actualite['id'] ?>/<?= $image['id'] ?>" 
-                                                               class="btn btn-sm <?= $image['is_primary'] ? 'btn-success' : 'btn-outline-success' ?>">
-                                                                <?= $image['is_primary'] ? 'Image principale' : 'Définir comme principale' ?>
-                                                            </a>
-                                                            <button type="button" class="btn btn-sm btn-danger delete-image" 
-                                                                    data-image-id="<?= $image['id'] ?>">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </div>
+                                <?php if (isset($actualite) && !empty($actualite['images'])): ?>
+                                <div class="mb-3">
+                                    <label class="form-label">Images actuelles</label>
+                                    <div class="row">
+                                        <?php foreach ($actualite['images'] as $image): ?>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card">
+                                                <img src="<?php echo $image['url']; ?>" class="card-img-top" alt="Image de l'actualité">
+                                                <div class="card-body">
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input" type="radio" name="is_primary" value="<?php echo $image['id']; ?>" 
+                                                            <?php echo $image['is_primary'] ? 'checked' : ''; ?> 
+                                                            onchange="setPrimaryImage(<?php echo $actualite['id']; ?>, <?php echo $image['id']; ?>)">
+                                                        <label class="form-check-label">
+                                                            Image principale
+                                                        </label>
                                                     </div>
+                                                    <button type="button" class="btn btn-danger btn-sm" 
+                                                            onclick="deleteImage(<?php echo $actualite['id']; ?>, <?php echo $image['id']; ?>)">
+                                                        Supprimer
+                                                    </button>
                                                 </div>
                                             </div>
+                                        </div>
                                         <?php endforeach; ?>
-                                    <?php endif; ?>
+                                    </div>
                                 </div>
-                                <input type="file" class="form-control" name="images[]" multiple accept="image/*">
+                                <?php endif; ?>
                             </div>
 
                             <div class="text-end">
                                 <button type="submit" class="btn btn-primary">
-                                    <?php echo $isEdit ? 'Modifier' : 'Créer'; ?> l'actualité
+                                    <i class="bi bi-save"></i> <?php echo $isEdit ? 'Mettre à jour' : 'Enregistrer'; ?>
                                 </button>
                             </div>
                         </form>
@@ -185,24 +216,51 @@ $title = $isEdit ? 'Modifier une actualité' : 'Nouvelle actualité';
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#contenu').summernote({
-                height: 300,
-                toolbar: [
-                    ['style', ['style']],
-                    ['font', ['bold', 'underline', 'clear']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['table', ['table']],
-                    ['insert', ['link', 'picture']],
-                    ['view', ['fullscreen', 'codeview', 'help']]
-                ]
+    function deleteImage(actualiteId, imageId) {
+        if (confirm('Êtes-vous sûr de vouloir supprimer cette image ?')) {
+            fetch(`/index.php/admin/actualites/${actualiteId}/image/${imageId}/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.error || 'Une erreur est survenue');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue');
             });
+        }
+    }
+
+    function setPrimaryImage(actualiteId, imageId) {
+        fetch(`/index.php/admin/actualites/${actualiteId}/image/${imageId}/primary`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                alert(data.error || 'Une erreur est survenue');
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue');
+            location.reload();
         });
+    }
     </script>
 </body>
 </html> 

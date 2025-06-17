@@ -26,11 +26,18 @@ CREATE TABLE biens (
   titre         VARCHAR(255)                            NOT NULL,
   type          ENUM('vente','location','location_etudiante')    NOT NULL,
   adresse       VARCHAR(255),
+  adresse_publique VARCHAR(255),  -- Adresse visible publiquement (zone vague)
   surface_m2    INT,
   chambres      TINYINT,
   salles_eau    TINYINT,
   prix          DECIMAL(12,2),
   description   TEXT,
+  -- Informations privées du propriétaire
+  proprietaire_nom VARCHAR(255),
+  proprietaire_prenom VARCHAR(255),
+  proprietaire_adresse TEXT,
+  proprietaire_email VARCHAR(255),
+  proprietaire_telephone VARCHAR(20),
   created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at    TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP
 );
@@ -76,6 +83,7 @@ CREATE TABLE actualite_images (
 CREATE TABLE partenaires (
   id          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   nom         VARCHAR(255) NOT NULL,
+  description TEXT,
   logo_url    VARCHAR(512),
   site_url    VARCHAR(512),
   created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -90,19 +98,11 @@ CREATE TABLE administrateurs (
   created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Modification de la table biens pour les nouveaux types
-ALTER TABLE biens 
-    MODIFY COLUMN type VARCHAR(20) NOT NULL;
-
--- Mise à jour des types existants
-UPDATE biens SET type = 'vente' WHERE type IN ('appartement', 'maison', 'local');
-
--- Modification finale de la colonne type
-ALTER TABLE biens 
-    MODIFY COLUMN type ENUM('vente','location','location_etudiante') NOT NULL;
+-- Nettoyage des types de biens (si nécessaire)
+-- UPDATE biens SET type = 'vente' WHERE type IN ('appartement', 'maison', 'local');
 
 -- ---------- Ajout d'un administrateur par défaut ----------
 -- Attention : Ce compte est à modifier en production !
 INSERT INTO administrateurs (email, password, created_at) 
-VALUES ('admin@fdcpi.fr', '$2y$10$Oa1HSgiJEVivJ.vWgf85iOYsUGp34QYJt.cGl9qDlHDQkTTGQyWUu', NOW());
+VALUES ('admin@fdcpi.fr', '$2y$10$4lUI1bcEix1hPpxYy9ZxweiXWo8ZJLbnay7xN5rB2hg1Lpp470M/e', NOW());
 -- Le mot de passe haché correspond à 'admin'

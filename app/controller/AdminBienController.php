@@ -134,12 +134,44 @@ class AdminBienController
     public function delete(int $id): void
     {
         try {
-            Bien::delete($id);
-            header('Location: /index.php/admin/biens/liste_biens');
-            exit;
+            error_log("Début de la suppression du bien ID: " . $id);
+            
+            // Récupérer le bien avant de le supprimer
+            $bien = Bien::getById($id);
+            if (!$bien) {
+                error_log("Bien non trouvé avec l'ID: " . $id);
+                $_SESSION['error'] = 'Bien non trouvé.';
+                header('Location: /index.php/admin/biens');
+                exit;
+            }
+
+            // Si c'est une confirmation de suppression
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && $_POST['confirm_delete'] === 'yes') {
+                error_log("Confirmation de suppression reçue pour le bien ID: " . $id);
+                
+                // Supprimer le bien (les images seront supprimées automatiquement grâce à ON DELETE CASCADE)
+                if (Bien::delete($id)) {
+                    error_log("Bien supprimé avec succès");
+                    $_SESSION['success'] = 'Le bien a été supprimé avec succès.';
+                } else {
+                    error_log("Échec de la suppression du bien");
+                    $_SESSION['error'] = 'Erreur lors de la suppression du bien.';
+                }
+                
+                header('Location: /index.php/admin/biens');
+                exit;
+            }
+
+            // Sinon, afficher le formulaire de confirmation
+            error_log("Affichage du formulaire de confirmation de suppression");
+            include_once __DIR__ . '/../../public/admin/biens/delete_confirm.php';
+            
         } catch (\Exception $e) {
-            $error = 'Une erreur est survenue lors de la suppression du bien';
-            include_once __DIR__ . '/../../public/admin/biens/liste_biens.php';
+            error_log("Exception lors de la suppression: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
+            $_SESSION['error'] = 'Erreur lors de la suppression : ' . $e->getMessage();
+            header('Location: /index.php/admin/biens');
+            exit;
         }
     }
 
@@ -159,6 +191,22 @@ class AdminBienController
 
             foreach ($files['tmp_name'] as $key => $tmp_name) {
                 if ($files['error'][$key] === UPLOAD_ERR_OK) {
+                    // Validation du type de fichier
+                    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                    $mimeType = finfo_file($finfo, $tmp_name);
+                    finfo_close($finfo);
+
+                    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                    if (!in_array($mimeType, $allowedTypes)) {
+                        error_log("Type de fichier non autorisé: " . $mimeType);
+                        throw new \Exception('Type de fichier non autorisé. Formats acceptés : JPG, PNG, GIF, WEBP');
+                    }
+
+                    // Validation de la taille (max 10MB)
+                    if ($files['size'][$key] > 10 * 1024 * 1024) {
+                        throw new \Exception('L\'image est trop volumineuse. Taille maximum : 10MB');
+                    }
+
                     $fileName = uniqid() . '_' . basename($files['name'][$key]);
                     $uploadFile = $uploadDir . $fileName;
 
@@ -178,7 +226,17 @@ class AdminBienController
                         throw new \Exception('Erreur lors de l\'upload de l\'image');
                     }
                 } else if ($files['error'][$key] !== UPLOAD_ERR_NO_FILE) {
-                    error_log("Erreur lors de l'upload: " . $files['error'][$key]);
+                    $errorMessages = [
+                        UPLOAD_ERR_INI_SIZE => 'L\'image dépasse la taille maximale autorisée par PHP',
+                        UPLOAD_ERR_FORM_SIZE => 'L\'image dépasse la taille maximale autorisée par le formulaire',
+                        UPLOAD_ERR_PARTIAL => 'L\'image n\'a été que partiellement uploadée',
+                        UPLOAD_ERR_NO_TMP_DIR => 'Dossier temporaire manquant',
+                        UPLOAD_ERR_CANT_WRITE => 'Échec de l\'écriture du fichier sur le disque',
+                        UPLOAD_ERR_EXTENSION => 'Une extension PHP a arrêté l\'upload'
+                    ];
+                    $errorMessage = $errorMessages[$files['error'][$key]] ?? 'Erreur inconnue lors de l\'upload';
+                    error_log("Erreur lors de l'upload: " . $errorMessage);
+                    throw new \Exception($errorMessage);
                 }
             }
         } catch (\Exception $e) {
@@ -199,5 +257,80 @@ class AdminBienController
         
         header("Location: /index.php/admin/biens/edit/" . $bienId);
         exit;
+    }
+
+    public function deleteImage(int $bienId, int $imageId): void
+    {
+        try {
+            // Récupérer les détails de l'image avant suppression
+            $image = BienImage::getById($imageId);
+            
+            if (!$image || $image['bien_id'] != $bienId) {
+                throw new \Exception('Image non trouvée');
+            }
+
+            // Supprimer le fichier physique
+            $filePath = PUBLIC_PATH . $image['url'];
+            if (file_exists($filePath)) {
+                unlink($filePath);
+                error_log("Fichier supprimé: " . $filePath);
+            }
+
+            // Supprimer l'entrée dans la base de données
+            if (BienImage::delete($imageId)) {
+                error_log("Image supprimée de la base de données. ID: " . $imageId);
+                
+                // Si c'était l'image principale, définir une nouvelle image principale
+                if ($image['is_primary']) {
+                    $otherImages = BienImage::listByBien($bienId);
+                    if (!empty($otherImages)) {
+                        BienImage::setPrimary($bienId, $otherImages[0]['id']);
+                        error_log("Nouvelle image principale définie: " . $otherImages[0]['id']);
+                    }
+                }
+                
+                $_SESSION['success'] = 'Image supprimée avec succès';
+            } else {
+                throw new \Exception('Erreur lors de la suppression de l\'image');
+            }
+        } catch (\Exception $e) {
+            error_log("Erreur lors de la suppression de l'image: " . $e->getMessage());
+            $_SESSION['error'] = 'Erreur lors de la suppression de l\'image: ' . $e->getMessage();
+        }
+    }
+
+    public function view($id)
+    {
+        try {
+            error_log("Début de la méthode view() pour le bien ID: " . $id);
+            
+            // Initialiser la connexion à la base de données
+            Bien::init(DB_HOST, DB_NAME, DB_USER, DB_PASS);
+            
+            // Récupérer le bien
+            $bien = Bien::getById($id);
+            error_log("Bien récupéré: " . print_r($bien, true));
+
+            if (!$bien) {
+                error_log("Bien non trouvé avec l'ID: " . $id);
+                $_SESSION['error'] = 'Bien non trouvé.';
+                header('Location: /index.php/admin/biens');
+                exit;
+            }
+
+            // Récupérer les images du bien
+            $images = BienImage::listByBien($id);
+            error_log("Images récupérées: " . print_r($images, true));
+
+            // Afficher la page de détails
+            include_once __DIR__ . '/../../public/admin/biens/view.php';
+            
+        } catch (\Exception $e) {
+            error_log("Exception dans view(): " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
+            $_SESSION['error'] = 'Erreur lors de l\'affichage des détails du bien : ' . $e->getMessage();
+            header('Location: /index.php/admin/biens');
+            exit;
+        }
     }
 } 

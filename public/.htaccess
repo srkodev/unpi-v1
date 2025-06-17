@@ -1,9 +1,14 @@
 RewriteEngine On
-RewriteBase /
 
 # Si le fichier ou dossier n'existe pas
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Rediriger vers index.php
-RewriteRule ^(.*)$ index.php [QSA,L] 
+# Rediriger toutes les requêtes vers index.php
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Autoriser l'accès direct aux fichiers statiques
+<FilesMatch "\.(css|js|jpg|jpeg|png|gif|ico)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch> 

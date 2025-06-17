@@ -1,43 +1,74 @@
-<?php 
-// Initialisation des variables si elles n'existent pas déjà
-if (!isset($partenaires)) {
-    $partenaires = [];
-}
+<?php
+require_once __DIR__ . '/../../app/config/autoload.php';
+require_once __DIR__ . '/../../app/config/config.php';
 
-include __DIR__ . '/../include/header.php'; ?>
+use App\Models\Partenaire;
 
-<main class="partenaires-section">
-    <div class="container">
-        <div class="partenaires-header">
+// Initialize the database connection
+Partenaire::init(DB_HOST, DB_NAME, DB_USER, DB_PASS);
+
+// Récupérer tous les partenaires
+$partenaires = Partenaire::getAll();
+?>
+<?php include __DIR__ . '/../include/header.php'; ?>
+
+<main>
+    <section class="hero">
+        <div class="hero-content">
             <h1>Nos Partenaires</h1>
-            <p>Découvrez nos partenaires qui nous accompagnent dans notre mission de service public</p>
+            <p>Découvrez nos partenaires de confiance</p>
         </div>
+    </section>
 
-        <div class="partenaires-grid">
-            <?php foreach ($partenaires as $partenaire): ?>
-                <div class="partenaire-card">
-                    <div class="partenaire-logo">
-                        <img src="/<?= $partenaire['logo_url'] ?>" alt="Logo <?= htmlspecialchars($partenaire['nom']) ?>">
-                    </div>
-                    <div class="partenaire-content">
-                        <h3><?= htmlspecialchars($partenaire['nom']) ?></h3>
-                        <p><?= htmlspecialchars($partenaire['description'] ?? '') ?></p>
-                        <?php if ($partenaire['site_url']): ?>
-                            <a href="<?= $partenaire['site_url'] ?>" class="partenaire-website" target="_blank">
-                                Visiter le site <i class="fas fa-external-link-alt"></i>
-                            </a>
+    <section class="partenaires-section">
+        <div class="container">
+            <div class="partenaires-header">
+                <h1>Nos Partenaires de Confiance</h1>
+                <p>Nous travaillons avec des professionnels reconnus pour vous offrir les meilleurs services</p>
+            </div>
+
+            <div class="partenaires-grid">
+                <?php foreach ($partenaires as $partenaire): ?>
+                    <div class="partenaire-card">
+                        <?php if (!empty($partenaire['logo_url'])): ?>
+                            <div class="partenaire-logo">
+                                <img src="<?php echo htmlspecialchars($partenaire['logo_url']); ?>" 
+                                     alt="Logo <?php echo htmlspecialchars($partenaire['nom']); ?>">
+                            </div>
                         <?php endif; ?>
+                        <div class="partenaire-content">
+                            <h3><?php echo htmlspecialchars($partenaire['nom']); ?></h3>
+                            <?php if (!empty($partenaire['description'])): ?>
+                                <p><?php echo nl2br(htmlspecialchars($partenaire['description'])); ?></p>
+                            <?php endif; ?>
+                            <?php if (!empty($partenaire['site_url'])): ?>
+                                <a href="<?php echo htmlspecialchars($partenaire['site_url']); ?>" 
+                                   class="partenaire-website" 
+                                   target="_blank" 
+                                   rel="noopener noreferrer">
+                                    <i class="fas fa-external-link-alt"></i> Visiter le site
+                                </a>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+                <?php endforeach; ?>
+            </div>
 
-        <div class="partenaire-contact">
-            <h2>Devenir Partenaire</h2>
-            <p>Vous souhaitez devenir partenaire de l'UNPI ? Contactez-nous pour en discuter.</p>
-            <a href="/index.php/contact" class="contact-btn">Nous Contacter</a>
+            <?php if (empty($partenaires)): ?>
+                <div class="text-center">
+                    <p>Aucun partenaire n'est actuellement disponible.</p>
+                </div>
+            <?php endif; ?>
+
+            <div class="partenaire-contact">
+                <h2>Vous souhaitez devenir partenaire ?</h2>
+                <p>Rejoignez notre réseau de partenaires de confiance et développez votre activité avec nous.</p>
+                <a href="/contact" class="contact-btn">
+                    <i class="fas fa-handshake"></i> Nous contacter
+                </a>
+            </div>
         </div>
-    </div>
+    </section>
 </main>
 
 <?php include __DIR__ . '/../include/footer.php'; ?> 

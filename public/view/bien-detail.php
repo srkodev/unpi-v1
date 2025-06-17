@@ -1,91 +1,145 @@
+<?php
+require_once __DIR__ . '/../../app/config/autoload.php';
+require_once __DIR__ . '/../../app/config/config.php';
+
+use App\Models\Bien;
+use App\Models\BienImage;
+
+// Récupérer l'ID du bien depuis l'URL
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+// Récupérer les détails du bien
+$bien = Bien::getById($id);
+
+// Rediriger si le bien n'existe pas
+if (!$bien) {
+    header('Location: /biens');
+    exit;
+}
+
+// Récupérer les images du bien
+$images = BienImage::listByBien($id);
+
+// Récupérer l'image principale
+$primaryImage = BienImage::getPrimaryImage($id);
+?>
 <?php include __DIR__ . '/../include/header.php'; ?>
 
-    <main>
-        <section class="hero">
-            <div class="hero-content">
-                <h1><?= htmlspecialchars($bien['titre']) ?></h1>
-                <div class="property-meta">
-                    <span class="property-type"><?= ucfirst($bien['type']) ?></span>
-                    <?php if ($bien['prix']): ?>
-                        <span class="property-price"><?= number_format($bien['prix'], 0, ',', ' ') ?> €</span>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </section>
+<main>
+    <section class="hero">
+        <div class="hero-content">
+            <h1><?php echo htmlspecialchars($bien['titre']); ?></h1>
+            <p>Découvrez les détails de ce bien immobilier</p>
+        </div>
+    </section>
 
-        <section class="property-detail">
-            <div class="container">
-                <?php if (!empty($images)): ?>
-                    <div class="swiper">
-                        <div class="swiper-wrapper">
-                            <?php foreach ($images as $image): ?>
-                                <div class="swiper-slide">
-                                    <img src="<?= htmlspecialchars($image['url']) ?>" alt="<?= htmlspecialchars($bien['titre']) ?>">
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                        <div class="swiper-pagination"></div>
-                        <div class="swiper-button-next"></div>
-                        <div class="swiper-button-prev"></div>
+    <section class="bien-detail">
+        <div class="container">
+            <!-- Bouton retour -->
+            <a href="/biens" class="retour-btn">
+                <i class="fas fa-arrow-left"></i> Retour aux biens
+            </a>
+
+            <!-- Carrousel d'images -->
+            <?php if (!empty($images)): ?>
+            <div class="swiper">
+                <div class="swiper-wrapper">
+                    <?php foreach ($images as $image): ?>
+                    <div class="swiper-slide">
+                        <img src="/<?php echo htmlspecialchars($image['url']); ?>" alt="Image du bien" loading="lazy">
                     </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php if (count($images) > 1): ?>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+
+            <div class="bien-content">
+                <!-- Prix -->
+                <?php if ($bien['prix']): ?>
+                <div class="bien-price">
+                    <?php echo number_format($bien['prix'], 0, ',', ' '); ?> €
+                </div>
                 <?php endif; ?>
 
-                <div class="property-content">
-                    <div class="property-details">
-                        <?php if ($bien['surface_m2']): ?>
-                            <div class="detail-item">
-                                <i class="fas fa-vector-square"></i>
-                                <span><?= $bien['surface_m2'] ?> m²</span>
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($bien['chambres']): ?>
-                            <div class="detail-item">
-                                <i class="fas fa-bed"></i>
-                                <span><?= $bien['chambres'] ?> chambre(s)</span>
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($bien['salles_eau']): ?>
-                            <div class="detail-item">
-                                <i class="fas fa-bath"></i>
-                                <span><?= $bien['salles_eau'] ?> salle(s) d'eau</span>
-                            </div>
-                        <?php endif; ?>
+                <!-- Métadonnées -->
+                <div class="bien-meta">
+                    <span class="property-type">
+                        <?php
+                        switch($bien['type']) {
+                            case 'vente':
+                                echo 'À vendre';
+                                break;
+                            case 'location':
+                                echo 'À louer';
+                                break;
+                            case 'location_etudiante':
+                                echo 'Location étudiante';
+                                break;
+                            default:
+                                echo ucfirst($bien['type']);
+                        }
+                        ?>
+                    </span>
+                </div>
+
+                <!-- Caractéristiques -->
+                <div class="bien-features">
+                    <?php if ($bien['surface_m2']): ?>
+                    <div class="feature-item">
+                        <i class="fas fa-vector-square"></i>
+                        <span><?php echo $bien['surface_m2']; ?> m²</span>
                     </div>
-
-                    <?php if (!empty($bien['adresse'])): ?>
-                        <div class="property-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span><?= htmlspecialchars($bien['adresse']) ?></span>
-                        </div>
                     <?php endif; ?>
-
-                    <?php if (!empty($bien['description'])): ?>
-                        <div class="property-description">
-                            <h3>Description</h3>
-                            <div class="description-content">
-                                <?= strip_tags($bien['description'], '<br><p><strong><em><ul><li><ol>') ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-
-                    <div class="property-actions">
-                        <a href="/index.php/biens" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Retour aux biens
-                        </a>
-                        <a href="/index.php/contact" class="btn btn-primary">
-                            <i class="fas fa-envelope"></i> Contacter
-                        </a>
+                    <?php if ($bien['chambres']): ?>
+                    <div class="feature-item">
+                        <i class="fas fa-bed"></i>
+                        <span><?php echo $bien['chambres']; ?> chambre(s)</span>
                     </div>
+                    <?php endif; ?>
+                    <?php if ($bien['salles_eau']): ?>
+                    <div class="feature-item">
+                        <i class="fas fa-bath"></i>
+                        <span><?php echo $bien['salles_eau']; ?> salle(s) d'eau</span>
+                    </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Description -->
+                <?php if ($bien['description']): ?>
+                <div class="bien-description">
+                    <?php echo nl2br(htmlspecialchars($bien['description'])); ?>
+                </div>
+                <?php endif; ?>
+
+                <!-- Localisation -->
+                <div class="bien-location">
+                    <h2>Localisation</h2>
+                    <div class="map" id="map"></div>
+                </div>
+
+                <!-- Bouton de contact -->
+                <div class="text-center">
+                    <a href="/contact" class="contact-btn">
+                        <i class="fas fa-envelope"></i> Nous contacter pour ce bien
+                    </a>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
+</main>
 
 <?php include __DIR__ . '/../include/footer.php'; ?>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <script>
+// Initialisation du Swiper
+if (document.querySelector('.swiper')) {
     const swiper = new Swiper('.swiper', {
         loop: true,
         pagination: {
@@ -96,103 +150,52 @@
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',
         },
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+        },
     });
+}
+
+// Initialisation de la carte
+const map = L.map('map').setView([48.2982, 4.0834], 13); // Coordonnées par défaut pour Troyes
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+// Fonction pour géocoder l'adresse
+async function geocodeAddress(address) {
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address + ', Aube, France')}`);
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+            const { lat, lon } = data[0];
+            const position = [parseFloat(lat), parseFloat(lon)];
+            
+            // Centrer la carte sur la position
+            map.setView(position, 14);
+            
+            // Ajouter un cercle pour la zone approximative
+            L.circle(position, {
+                radius: 500,
+                color: '#3498db',
+                fillColor: '#3498db',
+                fillOpacity: 0.2,
+                weight: 2
+            }).addTo(map);
+        }
+    } catch (error) {
+        console.error('Erreur lors du géocodage:', error);
+        // En cas d'erreur, garder la vue par défaut sur Troyes
+    }
+}
+
+// Géocoder l'adresse du bien
+<?php if (!empty($bien['adresse'])): ?>
+geocodeAddress('<?php echo addslashes($bien['adresse']); ?>');
+<?php endif; ?>
 </script>
 
-<style>
-.property-detail {
-    padding: 40px 0;
-}
-
-.swiper {
-    width: 100%;
-    height: 500px;
-    margin-bottom: 30px;
-}
-
-.swiper-slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.property-content {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.property-details {
-    display: flex;
-    gap: 20px;
-    margin: 20px 0;
-}
-
-.detail-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #666;
-}
-
-.property-location {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 20px 0;
-    color: #666;
-}
-
-.property-description {
-    margin: 30px 0;
-}
-
-.property-description h3 {
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.description-content {
-    line-height: 1.8;
-    color: #666;
-}
-
-.description-content p {
-    margin-bottom: 15px;
-}
-
-.property-actions {
-    display: flex;
-    gap: 15px;
-    margin-top: 40px;
-}
-
-.swiper-button-next,
-.swiper-button-prev {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.2);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    transition: background-color 0.3s;
-}
-
-.swiper-button-next:hover,
-.swiper-button-prev:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.swiper-button-next::after,
-.swiper-button-prev::after {
-    font-size: 20px;
-}
-
-.swiper-pagination-bullet {
-    background: #fff;
-    opacity: 0.7;
-}
-
-.swiper-pagination-bullet-active {
-    background: #007bff;
-    opacity: 1;
-}
-</style> 
+<link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"> 

@@ -28,7 +28,7 @@
                 </div>
                 <div class="president-content">
                     <div class="president-image">
-                        <img src="/asset/img/image.png" alt="Denis LAPÔTRE - Président UNPI 10">
+                        <img src="asset/img/image.png" alt="Denis LAPÔTRE - Président UNPI 10">
                     </div>
                     <div class="presentation-content">
                         <p>Le nouveau Diagnostic de performance énergétique DPE génère un million de logements vacants en France. Il en aura 7 à 8 millions en 2034.</p>
@@ -84,7 +84,7 @@
                     </div>
                     <div class="cta" style="text-align: center; background-color: #e9ecef; padding: 2rem; border-radius: 8px;">
                         <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem;">Rejoignez-nous : votre adhésion vous permettra de mieux assurer l'avenir de votre patrimoine, de mieux gérer celui-ci, d'être conseillé et défendu.</p>
-                        <a href="/index.php/adhesion" class="btn btn-primary" style="padding: 0.8rem 2rem; font-size: 1.1rem;">Comment adhérer</a>
+                        <a href="/adhesion" class="btn btn-primary" style="padding: 0.8rem 2rem; font-size: 1.1rem;">Comment adhérer</a>
                     </div>
                 </div>
             </div>

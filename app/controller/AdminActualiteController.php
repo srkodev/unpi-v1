@@ -5,54 +5,50 @@ use App\Models\Actualite;
 use App\Models\ActualiteImage;
 use PDOException;
 
-class AdminActualiteController
+class AdminActualiteController extends AdminController
 {
-    private $adminController;
+    private $uploadDir = 'uploads/actualites/';
 
     public function __construct()
     {
-        $this->adminController = new AdminController();
-    }
-
-    public function index(): void
-    {
-        try {
-            $actualites = Actualite::getAll();
-            include_once __DIR__ . '/../../public/admin/actualites/liste_actualites.php';
-        } catch (\Exception $e) {
-            error_log("Erreur dans index: " . $e->getMessage());
-            $actualites = [];
-            include_once __DIR__ . '/../../public/admin/actualites/liste_actualites.php';
+        parent::__construct();
+        // Check if upload directory exists but don't try to create it here
+        // It should be created by Docker during container build
+        if (!file_exists(PUBLIC_PATH . $this->uploadDir)) {
+            error_log("Warning: Upload directory does not exist: " . PUBLIC_PATH . $this->uploadDir);
+            // Don't try to create it here - this should be handled by Docker
         }
     }
 
-    public function create(): void
+    public function index()
     {
-        error_log("Méthode create() appelée");
+        error_log("Appel de AdminActualiteController::index()");
+        Actualite::init(DB_HOST, DB_NAME, DB_USER, DB_PASS);
+        return Actualite::getAll();
+    }
+
+    public function create()
+    {
+        error_log("Début de la méthode create()");
+        error_log("Méthode de requête: " . $_SERVER['REQUEST_METHOD']);
+        
+        // Initialize DB connection
+        Actualite::init(DB_HOST, DB_NAME, DB_USER, DB_PASS);
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            error_log("Traitement du formulaire POST pour créer une actualité");
+            error_log("Contenu de \$_POST: " . print_r($_POST, true));
+            error_log("Contenu de \$_FILES: " . print_r($_FILES, true));
+            
             try {
-                error_log("Début de la création d'une actualité");
-                
-                // Vérification des données
-                if (empty($_POST['titre'])) {
-                    throw new \Exception('Le titre est requis');
-                }
-
-                if (empty($_POST['categorie'])) {
-                    throw new \Exception('La catégorie est requise');
-                }
-
                 $data = [
-                    'titre' => $_POST['titre'],
-                    'slug' => $this->createSlug($_POST['titre']),
-                    'categorie' => $_POST['categorie'],
-                    'extrait' => $_POST['extrait'] ?? '',
+                    'titre' => $_POST['titre'] ?? '',
+                    'categorie' => $_POST['categorie'] ?? '',
                     'contenu' => $_POST['contenu'] ?? '',
                     'publie_le' => $_POST['publie_le'] ?? date('Y-m-d')
                 ];
-
-                error_log("Données préparées pour l'insertion: " . print_r($data, true));
+                
+                error_log("Données initiales: " . print_r($data, true));
 
                 // Création de l'actualité
                 $actualiteId = Actualite::create($data);
@@ -68,133 +64,244 @@ class AdminActualiteController
                     $this->handleImages($actualiteId, $_FILES['images']);
                 }
 
-                error_log("Redirection vers la liste des actualités");
-                header('Location: /index.php/admin/actualites/liste_actualites');
+                error_log("Création réussie, redirection vers la liste des actualités");
+                header('Location: /index.php/admin/actualites');
                 exit;
             } catch (\Exception $e) {
                 error_log("Erreur dans create: " . $e->getMessage());
-                $error = 'Une erreur est survenue lors de la création de l\'actualité: ' . $e->getMessage();
-                include_once __DIR__ . '/../../public/admin/actualites/form.php';
+                error_log("Stack trace: " . $e->getTraceAsString());
+                $_SESSION['error'] = 'Une erreur est survenue lors de la création de l\'actualité: ' . $e->getMessage();
             }
-        } else {
-            error_log("Affichage du formulaire de création");
-            include_once __DIR__ . '/../../public/admin/actualites/form.php';
         }
     }
 
-    public function edit(int $id): void
+    public function edit($id)
     {
-        try {
-            $actualite = Actualite::getById($id);
-            if (!$actualite) {
-                header('Location: /index.php/admin/actualites/liste_actualites');
-                exit;
-            }
+        error_log("Début de la méthode edit() avec ID: " . $id);
+        
+        Actualite::init(DB_HOST, DB_NAME, DB_USER, DB_PASS);
+        $actualite = Actualite::getById($id);
+        
+        if (!$actualite) {
+            error_log("Actualité avec ID " . $id . " non trouvée");
+            header('Location: /index.php/admin/actualites');
+            exit;
+        }
 
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            error_log("Traitement du formulaire POST pour éditer l'actualité ID " . $id);
+            error_log("Contenu de \$_POST: " . print_r($_POST, true));
+            error_log("Contenu de \$_FILES: " . print_r($_FILES, true));
+            
+            try {
                 $data = [
                     'titre' => $_POST['titre'] ?? '',
-                    'slug' => $this->createSlug($_POST['titre']),
                     'categorie' => $_POST['categorie'] ?? '',
-                    'extrait' => $_POST['extrait'] ?? '',
                     'contenu' => $_POST['contenu'] ?? '',
                     'publie_le' => $_POST['publie_le'] ?? date('Y-m-d')
                 ];
+                
+                error_log("Données initiales: " . print_r($data, true));
 
-                Actualite::update($id, $data);
+                // Mise à jour de l'actualité
+                if (Actualite::update($id, $data)) {
+                    // Gestion des images
+                    if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
+                        $this->handleImages($id, $_FILES['images']);
+                    }
 
-                // Gestion des images
-                if (isset($_FILES['images'])) {
-                    $this->handleImages($id, $_FILES['images']);
+                    error_log("Mise à jour réussie, redirection vers la liste des actualités");
+                    header('Location: /index.php/admin/actualites');
+                    exit;
+                } else {
+                    throw new \Exception('Erreur lors de la mise à jour de l\'actualité');
                 }
-
-                header('Location: /index.php/admin/actualites/liste_actualites');
-                exit;
+            } catch (\Exception $e) {
+                error_log("Erreur dans edit: " . $e->getMessage());
+                error_log("Stack trace: " . $e->getTraceAsString());
+                $_SESSION['error'] = 'Une erreur est survenue lors de la modification de l\'actualité: ' . $e->getMessage();
             }
-
-            $images = ActualiteImage::listByActualite($id);
-            include_once __DIR__ . '/../../public/admin/actualites/form.php';
-        } catch (\Exception $e) {
-            $error = 'Une erreur est survenue lors de la modification de l\'actualité';
-            include_once __DIR__ . '/../../public/admin/actualites/form.php';
         }
+
+        return $actualite;
     }
 
-    public function delete(int $id): void
+    public function delete($id)
     {
-        try {
-            Actualite::delete($id);
-            header('Location: /index.php/admin/actualites/liste_actualites');
-            exit;
-        } catch (\Exception $e) {
-            $error = 'Une erreur est survenue lors de la suppression de l\'actualité';
-            include_once __DIR__ . '/../../public/admin/actualites/liste_actualites.php';
-        }
-    }
-
-    public function setPrimaryImage(int $actualiteId, int $imageId): void
-    {
-        try {
-            ActualiteImage::setPrimary($actualiteId, $imageId);
-            $_SESSION['success'] = "L'image principale a été mise à jour avec succès.";
-        } catch (PDOException $e) {
-            $_SESSION['error'] = "Erreur lors de la mise à jour de l'image principale.";
-            error_log("Erreur setPrimaryImage: " . $e->getMessage());
-        }
+        error_log("Début de la méthode delete() avec ID: " . $id);
         
-        header("Location: /index.php/admin/actualites/edit/" . $actualiteId);
-        exit;
+        Actualite::init(DB_HOST, DB_NAME, DB_USER, DB_PASS);
+        $actualite = Actualite::getById($id);
+
+        if (!$actualite) {
+            error_log("Actualité avec ID " . $id . " non trouvée");
+            $_SESSION['error'] = 'Actualité non trouvée.';
+            header('Location: /index.php/admin/actualites');
+            exit;
+        }
+
+        // Si c'est une confirmation de suppression
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && $_POST['confirm_delete'] === 'yes') {
+            error_log("Tentative de suppression de l'actualité ID: " . $id);
+            
+            try {
+                if (Actualite::delete($id)) {
+                    // Les images seront supprimées automatiquement grâce à ON DELETE CASCADE
+                    error_log("Actualité supprimée avec succès");
+                    $_SESSION['success'] = 'L\'actualité a été supprimée avec succès.';
+                } else {
+                    error_log("Échec de la suppression de l'actualité");
+                    $_SESSION['error'] = 'Erreur lors de la suppression de l\'actualité.';
+                }
+            } catch (\Exception $e) {
+                error_log("Erreur lors de la suppression: " . $e->getMessage());
+                error_log("Stack trace: " . $e->getTraceAsString());
+                $_SESSION['error'] = 'Une erreur est survenue lors de la suppression de l\'actualité: ' . $e->getMessage();
+            }
+            
+            header('Location: /index.php/admin/actualites');
+            exit;
+        }
+
+        // Sinon, afficher le formulaire de confirmation
+        include_once __DIR__ . '/../../public/admin/actualites/delete_confirm.php';
     }
 
-    private function createSlug(string $title): string
-    {
-        $slug = strtolower($title);
-        $slug = preg_replace('/[^a-z0-9-]/', '-', $slug);
-        $slug = preg_replace('/-+/', '-', $slug);
-        return trim($slug, '-');
-    }
-
-    private function handleImages(int $actualiteId, array $files): void
+    private function handleImages($actualiteId, $files)
     {
         try {
-            $uploadDir = PUBLIC_PATH . 'uploads/actualites/';
+            $uploadDir = PUBLIC_PATH . $this->uploadDir;
             if (!file_exists($uploadDir)) {
-                error_log("Le répertoire d'upload n'existe pas. Il devrait être créé par Docker: " . $uploadDir);
-                throw new \Exception('Le dossier d\'upload n\'existe pas');
+                mkdir($uploadDir, 0777, true);
             }
 
             if (!is_writable($uploadDir)) {
-                error_log("Le répertoire d'upload n'est pas accessible en écriture: " . $uploadDir);
                 throw new \Exception('Le dossier d\'upload n\'est pas accessible en écriture');
             }
 
+            // Vérifier si c'est la première image de l'actualité
+            $existingImages = ActualiteImage::listByActualite($actualiteId);
+            $isFirstImage = empty($existingImages);
+
             foreach ($files['tmp_name'] as $key => $tmp_name) {
                 if ($files['error'][$key] === UPLOAD_ERR_OK) {
+                    // Validation du type de fichier
+                    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                    $mimeType = finfo_file($finfo, $tmp_name);
+                    finfo_close($finfo);
+
+                    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                    if (!in_array($mimeType, $allowedTypes)) {
+                        throw new \Exception('Type de fichier non autorisé. Formats acceptés : JPG, PNG, GIF');
+                    }
+
+                    // Validation de la taille (max 5MB)
+                    if ($files['size'][$key] > 5 * 1024 * 1024) {
+                        throw new \Exception('L\'image est trop volumineuse. Taille maximum : 5MB');
+                    }
+
                     $fileName = uniqid() . '_' . basename($files['name'][$key]);
                     $uploadFile = $uploadDir . $fileName;
 
-                    error_log("Tentative d'upload de l'image: " . $uploadFile);
-
                     if (move_uploaded_file($tmp_name, $uploadFile)) {
-                        $isPrimary = isset($_POST['is_primary']) && $_POST['is_primary'] == $key;
+                        // La première image est automatiquement définie comme principale
+                        $isPrimary = $isFirstImage || (isset($_POST['is_primary']) && $_POST['is_primary'] == $key);
+                        
                         $imageId = ActualiteImage::add(
                             $actualiteId,
-                            'uploads/actualites/' . $fileName,
+                            $this->uploadDir . $fileName,
                             $isPrimary,
                             $key
                         );
+
+                        if ($isPrimary) {
+                            ActualiteImage::setPrimary($actualiteId, $imageId);
+                        }
+
                         error_log("Image uploadée avec succès. ID: " . $imageId);
                     } else {
-                        error_log("Échec de l'upload de l'image: " . $uploadFile);
                         throw new \Exception('Erreur lors de l\'upload de l\'image');
                     }
                 } else if ($files['error'][$key] !== UPLOAD_ERR_NO_FILE) {
-                    error_log("Erreur lors de l'upload: " . $files['error'][$key]);
+                    $errorMessages = [
+                        UPLOAD_ERR_INI_SIZE => 'L\'image dépasse la taille maximale autorisée par PHP',
+                        UPLOAD_ERR_FORM_SIZE => 'L\'image dépasse la taille maximale autorisée par le formulaire',
+                        UPLOAD_ERR_PARTIAL => 'L\'image n\'a été que partiellement uploadée',
+                        UPLOAD_ERR_NO_TMP_DIR => 'Dossier temporaire manquant',
+                        UPLOAD_ERR_CANT_WRITE => 'Échec de l\'écriture du fichier sur le disque',
+                        UPLOAD_ERR_EXTENSION => 'Une extension PHP a arrêté l\'upload'
+                    ];
+                    $errorMessage = $errorMessages[$files['error'][$key]] ?? 'Erreur inconnue lors de l\'upload';
+                    throw new \Exception($errorMessage);
                 }
             }
         } catch (\Exception $e) {
             error_log("Erreur dans handleImages: " . $e->getMessage());
             throw $e;
+        }
+    }
+
+    public function deleteImage($actualiteId, $imageId)
+    {
+        try {
+            $image = ActualiteImage::getById($imageId);
+            if (!$image || $image['actualite_id'] != $actualiteId) {
+                throw new \Exception('Image non trouvée');
+            }
+
+            // Supprimer le fichier physique
+            $filePath = PUBLIC_PATH . $image['url'];
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+
+            // Supprimer l'entrée dans la base de données
+            ActualiteImage::delete($imageId);
+
+            // Si c'était l'image principale, définir une nouvelle image principale
+            if ($image['is_primary']) {
+                $otherImages = ActualiteImage::listByActualite($actualiteId);
+                if (!empty($otherImages)) {
+                    ActualiteImage::setPrimary($actualiteId, $otherImages[0]['id']);
+                }
+            }
+
+            $_SESSION['success'] = 'Image supprimée avec succès';
+        } catch (\Exception $e) {
+            error_log("Erreur lors de la suppression de l'image: " . $e->getMessage());
+            $_SESSION['error'] = 'Erreur lors de la suppression de l\'image: ' . $e->getMessage();
+        }
+    }
+
+    public function setPrimaryImage($actualiteId, $imageId)
+    {
+        try {
+            $image = ActualiteImage::getById($imageId);
+            if (!$image || $image['actualite_id'] != $actualiteId) {
+                throw new \Exception('Image non trouvée');
+            }
+
+            ActualiteImage::setPrimary($actualiteId, $imageId);
+            $_SESSION['success'] = 'Image principale mise à jour';
+        } catch (\Exception $e) {
+            error_log("Erreur lors de la mise à jour de l'image principale: " . $e->getMessage());
+            $_SESSION['error'] = 'Erreur lors de la mise à jour de l\'image principale: ' . $e->getMessage();
+        }
+    }
+
+    public function getActualite($id) {
+        error_log("Récupération de l'actualité ID: " . $id);
+        try {
+            $actualite = Actualite::getById($id);
+            if ($actualite) {
+                error_log("Actualité trouvée");
+                return $actualite;
+            }
+            error_log("Actualité non trouvée");
+            return null;
+        } catch (\Exception $e) {
+            error_log("Erreur lors de la récupération de l'actualité: " . $e->getMessage());
+            return null;
         }
     }
 } 

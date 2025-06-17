@@ -13,12 +13,38 @@ class Actualite extends BaseModel
             error_log("Début de la création d'une actualité dans le modèle");
             error_log("Données reçues: " . print_r($data, true));
             
+            // Validation des données requises
+            $requiredFields = ['titre', 'categorie'];
+            foreach ($requiredFields as $field) {
+                if (empty($data[$field])) {
+                    error_log("Champ requis manquant: " . $field);
+                    throw new \Exception("Le champ $field est requis");
+                }
+            }
+
+            // Validation de la date de publication
+            if (!empty($data['publie_le'])) {
+                $date = \DateTime::createFromFormat('Y-m-d', $data['publie_le']);
+                if (!$date || $date->format('Y-m-d') !== $data['publie_le']) {
+                    error_log("Date de publication invalide: " . $data['publie_le']);
+                    throw new \Exception("La date de publication est invalide");
+                }
+            }
+
+            // Vérification de la connexion à la base de données
+            if (!isset(self::$db)) {
+                error_log("Erreur: La connexion à la base de données n'est pas initialisée");
+                throw new \Exception("Erreur de connexion à la base de données");
+            }
+
+            // Insertion dans la base de données
             $id = self::insert(self::TABLE, $data);
             
             error_log("Actualité créée avec l'ID: " . $id);
             return $id;
         } catch (\Exception $e) {
             error_log("Erreur dans Actualite::create: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
             throw $e;
         }
     }

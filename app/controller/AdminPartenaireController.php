@@ -131,15 +131,29 @@ class AdminPartenaireController extends AdminController
         Partenaire::init(DB_HOST, DB_NAME, DB_USER, DB_PASS);
         $partenaire = Partenaire::getById($id);
 
-        if (Partenaire::delete($id)) {
-            // Delete logo file if exists
-            if (!empty($partenaire['logo_url']) && file_exists(PUBLIC_PATH . $partenaire['logo_url'])) {
-                unlink(PUBLIC_PATH . $partenaire['logo_url']);
-            }
-            
+        if (!$partenaire) {
+            $_SESSION['error'] = 'Partenaire non trouvé.';
             header('Location: /index.php/admin/partenaires');
             exit;
         }
+
+        // Si c'est une confirmation de suppression
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete']) && $_POST['confirm_delete'] === 'yes') {
+            if (Partenaire::delete($id)) {
+                // Delete logo file if exists
+                if (!empty($partenaire['logo_url']) && file_exists(PUBLIC_PATH . $partenaire['logo_url'])) {
+                    unlink(PUBLIC_PATH . $partenaire['logo_url']);
+                }
+                $_SESSION['success'] = 'Le partenaire a été supprimé avec succès.';
+            } else {
+                $_SESSION['error'] = 'Erreur lors de la suppression du partenaire.';
+            }
+            header('Location: /index.php/admin/partenaires');
+            exit;
+        }
+
+        // Sinon, afficher le formulaire de confirmation
+        include_once __DIR__ . '/../../public/admin/partenaires/delete_confirm.php';
     }
 
     /**

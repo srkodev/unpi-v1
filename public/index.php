@@ -6,18 +6,12 @@ require_once __DIR__ . '/../app/config/autoload.php';
 // Connexion à la BDD + injection dans les modèles
 require_once __DIR__ . '/../app/config/config.php';
 require_once __DIR__ . '/../app/config/helpers.php';
-require_once __DIR__ . '/../app/controller/ActualiteController.php';
 
-// Import des contrôleurs nécessaires
-use app\controller\ActualiteController;
-use app\controller\BienController;
-use app\controller\PartenaireController;
-
-// Récupération de l'URL sans les paramètres
+// Récupération de l'URL
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// Retirer le chemin de base /unpi/public
-$basePath = '/unpi/public';
+// Retirer le chemin de base /public si présent
+$basePath = '/public';
 if (str_starts_with($uri, $basePath)) {
     $uri = substr($uri, strlen($basePath));
 }
@@ -25,29 +19,22 @@ if (str_starts_with($uri, $basePath)) {
 // Supprimer /index.php si présent
 $uri = preg_replace('#^/index\.php#', '', $uri);
 
-// Routeur simple
+// Gestion des routes simples
 switch ($uri) {
     case '':
     case '/':
-    case '/home':
         require __DIR__ . '/view/home.php';
         break;
 
     case '/actualites':
-        (new ActualiteController())->index();
-        break;
-
-    case (preg_match('/^\/actualite\/(\d+)$/', $uri, $matches) ? true : false):
-        $id = (int)$matches[1];
-        (new ActualiteController())->show($id);
+        // Initialiser les variables pour la page actualités
+        $actualites = \App\Models\Actualite::getAll();
+        $categories = array_unique(array_column($actualites, 'categorie'));
+        require __DIR__ . '/view/actualites.php';
         break;
 
     case '/actualite-detail':
-        if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-            (new ActualiteController())->show((int)$_GET['id']);
-        } else {
-            echo "ID d'actualité invalide.";
-        }
+        require __DIR__ . '/view/actualite-detail.php';
         break;
 
     case '/adhesion':
@@ -59,17 +46,23 @@ switch ($uri) {
         break;
 
     case '/biens':
-        (new BienController())->index();
+        // Initialiser les variables pour la page biens
+        $biens = \App\Models\Bien::getAll();
+        $types = ['vente', 'location', 'location_etudiante'];
+        require __DIR__ . '/view/biens.php';
+        break;
+
+    case '/bien-detail':
+        require __DIR__ . '/view/bien-detail.php';
         break;
 
     case (preg_match('/^\/bien\/(\d+)$/', $uri, $matches) ? true : false):
-        $id = (int)$matches[1];
-        (new BienController())->show($id);
+        $_GET['id'] = $matches[1];
+        require __DIR__ . '/view/bien-detail.php';
         break;
 
     case '/partenaires':
-        $controller = new \App\Controller\PartenaireController();
-        $controller->index();
+        require __DIR__ . '/view/partenaires.php';
         break;
 
     case '/contact':
@@ -93,62 +86,83 @@ switch ($uri) {
         require __DIR__ . '/admin/logout.php';
         break;
 
+    case '/admin/generate_password':
+        require __DIR__ . '/admin/generate_password.php';
+        break;
+
     case '/admin/actualites/liste_actualites':
         require __DIR__ . '/admin/actualites/liste_actualites.php';
         break;
 
+    case '/admin/actualites':
+        require __DIR__ . '/admin/actualites/liste_actualites.php';
+        break;
+
     case '/admin/actualites/create':
-        $controller = new \App\Controller\AdminActualiteController();
-        $controller->create();
+        require __DIR__ . '/admin/actualites/form.php';
+        break;
+
+    case '/admin/actualites/edit':
+        require __DIR__ . '/admin/actualites/form.php';
         break;
 
     case (preg_match('/^\/admin\/actualites\/edit\/(\d+)$/', $uri, $matches) ? true : false):
-        $id = (int)$matches[1];
-        $controller = new \App\Controller\AdminActualiteController();
-        $controller->edit($id);
+        $_GET['id'] = $matches[1];
+        require __DIR__ . '/admin/actualites/form.php';
         break;
 
-    case '/admin/actualites/delete':
-        if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-            $controller = new \App\Controller\AdminActualiteController();
-            $controller->delete((int)$_GET['id']);
-        }
+    case (preg_match('/^\/admin\/actualites\/delete\/(\d+)$/', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        require __DIR__ . '/admin/actualites/delete_confirm.php';
         break;
 
-    case '/admin/biens':
     case '/admin/biens/liste_biens':
         require __DIR__ . '/admin/biens/liste_biens.php';
         break;
 
+    case '/admin/biens':
+        require __DIR__ . '/admin/biens/liste_biens.php';
+        break;
+
     case '/admin/biens/create':
-        $controller = new \App\Controller\AdminBienController();
-        $controller->create();
+        require __DIR__ . '/admin/biens/form.php';
+        break;
+
+    case '/admin/biens/edit':
+        require __DIR__ . '/admin/biens/form.php';
         break;
 
     case (preg_match('/^\/admin\/biens\/edit\/(\d+)$/', $uri, $matches) ? true : false):
-        $id = (int)$matches[1];
-        $controller = new \App\Controller\AdminBienController();
-        $controller->edit($id);
+        $_GET['id'] = $matches[1];
+        require __DIR__ . '/admin/biens/form.php';
         break;
 
     case (preg_match('/^\/admin\/biens\/delete\/(\d+)$/', $uri, $matches) ? true : false):
-        $id = (int)$matches[1];
-        $controller = new \App\Controller\AdminBienController();
-        $controller->delete($id);
+        $_GET['id'] = $matches[1];
+        require __DIR__ . '/admin/biens/delete.php';
         break;
 
-    case (preg_match('/^\/admin\/biens\/set-primary-image\/(\d+)\/(\d+)$/', $uri, $matches) ? true : false):
-        $bienId = (int)$matches[1];
-        $imageId = (int)$matches[2];
-        $controller = new \App\Controller\AdminBienController();
-        $controller->setPrimaryImage($bienId, $imageId);
+    case '/admin/biens/detail':
+        require __DIR__ . '/admin/biens/detail.php';
         break;
 
-    case (preg_match('/^\/admin\/actualites\/set-primary-image\/(\d+)\/(\d+)$/', $uri, $matches) ? true : false):
-        $actualiteId = (int)$matches[1];
-        $imageId = (int)$matches[2];
-        $controller = new \App\Controller\AdminActualiteController();
-        $controller->setPrimaryImage($actualiteId, $imageId);
+    case (preg_match('/^\/admin\/biens\/detail\/(\d+)$/', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        require __DIR__ . '/admin/biens/detail.php';
+        break;
+
+    case '/admin/biens/view':
+        require __DIR__ . '/admin/biens/view.php';
+        break;
+
+    case (preg_match('/^\/admin\/biens\/view\/(\d+)$/', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        $controller = new \App\Controller\AdminBienController();
+        $controller->view($matches[1]);
+        break;
+
+    case '/admin/partenaires/liste_partenaires':
+        require __DIR__ . '/admin/partenaires/liste_partenaires.php';
         break;
 
     case '/admin/partenaires':
@@ -159,15 +173,47 @@ switch ($uri) {
         require __DIR__ . '/admin/partenaires/form.php';
         break;
 
+    case '/admin/partenaires/edit':
+        require __DIR__ . '/admin/partenaires/form.php';
+        break;
+
     case (preg_match('/^\/admin\/partenaires\/edit\/(\d+)$/', $uri, $matches) ? true : false):
-        $_GET['id'] = (int)$matches[1];
+        $_GET['id'] = $matches[1];
         require __DIR__ . '/admin/partenaires/form.php';
         break;
 
     case (preg_match('/^\/admin\/partenaires\/delete\/(\d+)$/', $uri, $matches) ? true : false):
-        $id = (int)$matches[1];
-        $controller = new \App\Controller\AdminPartenaireController();
-        $controller->delete($id);
+        $_GET['id'] = $matches[1];
+        require __DIR__ . '/admin/partenaires/delete.php';
+        break;
+
+    case (preg_match('/^\/admin\/actualites\/(\d+)\/image\/(\d+)\/delete$/', $uri, $matches) ? true : false):
+        $controller = new \App\Controller\AdminActualiteController();
+        $controller->deleteImage($matches[1], $matches[2]);
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true]);
+        break;
+
+    case (preg_match('/^\/admin\/actualites\/(\d+)\/image\/(\d+)\/primary$/', $uri, $matches) ? true : false):
+        $controller = new \App\Controller\AdminActualiteController();
+        $controller->setPrimaryImage($matches[1], $matches[2]);
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true]);
+        break;
+
+    // Routes pour la gestion des images des biens
+    case (preg_match('/^\/admin\/biens\/(\d+)\/image\/(\d+)\/delete$/', $uri, $matches) ? true : false):
+        $controller = new \App\Controller\AdminBienController();
+        $controller->deleteImage($matches[1], $matches[2]);
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true]);
+        break;
+
+    case (preg_match('/^\/admin\/biens\/(\d+)\/image\/(\d+)\/primary$/', $uri, $matches) ? true : false):
+        $controller = new \App\Controller\AdminBienController();
+        $controller->setPrimaryImage($matches[1], $matches[2]);
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true]);
         break;
 
     default:

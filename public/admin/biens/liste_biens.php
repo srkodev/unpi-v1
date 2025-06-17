@@ -121,10 +121,13 @@ error_log("Fin de l'affichage de la liste des biens");
                                             <td><?= $bien['surface_m2'] ? $bien['surface_m2'] . ' m²' : '-' ?></td>
                                             <td><?= $bien['prix'] ? number_format($bien['prix'], 0, ',', ' ') . ' €' : '-' ?></td>
                                             <td>
-                                                <a href="/index.php/admin/biens/edit/<?= $bien['id'] ?>" class="btn btn-sm btn-primary">
+                                                <a href="/index.php/admin/biens/view/<?= intval($bien['id']) ?>" class="btn btn-sm btn-info" title="Voir les détails">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="/index.php/admin/biens/edit/<?= $bien['id'] ?>" class="btn btn-sm btn-primary" title="Modifier">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
-                                                <a href="/index.php/admin/biens/delete/<?= $bien['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce bien ?')">
+                                                <a href="/index.php/admin/biens/delete/<?= intval($bien['id']) ?>" class="btn btn-sm btn-danger" title="Supprimer">
                                                     <i class="bi bi-trash"></i>
                                                 </a>
                                             </td>

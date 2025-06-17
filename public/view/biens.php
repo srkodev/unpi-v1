@@ -55,9 +55,13 @@ $biens_page = array_slice($biens, $debut, $biens_par_page);
                             <div class="property-image">
                                 <?php
                                 $image = BienImage::getPrimaryImage($bien['id']);
-                                $imageUrl = $image ? $image['url'] : 'https://picsum.photos/800/600?random=' . $bien['id'];
+                                if ($image) {
+                                    $imageUrl = '/' . $image['url']; // Format: /uploads/biens/filename.jpg
+                                } else {
+                                    $imageUrl = 'https://picsum.photos/800/600?random=' . $bien['id'];
+                                }
                                 ?>
-                                <img src="<?= $imageUrl ?>" alt="<?= htmlspecialchars($bien['titre']) ?>">
+                                <img src="<?= $imageUrl ?>" alt="<?= htmlspecialchars($bien['titre']) ?>" loading="lazy">
                             </div>
                             <div class="property-content">
                                 <div class="property-meta">
@@ -78,7 +82,7 @@ $biens_page = array_slice($biens, $debut, $biens_par_page);
                                         <span><i class="fas fa-bath"></i> <?= $bien['salles_eau'] ?> salle(s) d'eau</span>
                                     <?php endif; ?>
                                 </div>
-                                <a href="/index.php/bien/<?= $bien['id'] ?>" class="read-more">
+                                <a href="/bien/<?= $bien['id'] ?>" class="read-more">
                                     Voir le bien <i class="fas fa-arrow-right"></i>
                                 </a>
                             </div>

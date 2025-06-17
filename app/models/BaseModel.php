@@ -78,16 +78,33 @@ abstract class BaseModel
     protected static function deleteRow(string $table, int $id): bool
     {
         try {
+            if (!isset(self::$db)) {
+                error_log("Erreur: La connexion à la base de données n'est pas initialisée");
+                return false;
+            }
+
             $sql = "DELETE FROM $table WHERE id = ?";
             error_log("Requête SQL de suppression: " . $sql . " (ID: $id)");
 
             $stmt = self::$db->prepare($sql);
+            if (!$stmt) {
+                error_log("Erreur lors de la préparation de la requête: " . print_r(self::$db->errorInfo(), true));
+                return false;
+            }
+
             $result = $stmt->execute([$id]);
+            if (!$result) {
+                error_log("Erreur lors de l'exécution de la requête: " . print_r($stmt->errorInfo(), true));
+                return false;
+            }
+
+            $rowCount = $stmt->rowCount();
+            error_log("Nombre de lignes supprimées: " . $rowCount);
             
-            error_log("Suppression " . ($result ? "réussie" : "échouée"));
-            return $result;
+            return $rowCount > 0;
         } catch (PDOException $e) {
             error_log("Erreur lors de la suppression dans $table: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
             throw $e;
         }
     }

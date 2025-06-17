@@ -13,17 +13,17 @@
         <nav class="navbar">
             <div class="container nav-container">
                 <div class="logo">
-                    <a href="/index.php">
-                        <img src="/assets/images/logo.png" alt="Logo FDPCI">
+                    <a href="/public/">
+                        <img src="/public/asset/img/logo.png" alt="Logo FDPCI">
                     </a>
                 </div>
                 <ul class="nav-links">
-                    <li><a href="/index.php">Accueil</a></li>
-                    <li><a href="/index.php/actualites">Actualités</a></li>
-                    <li><a href="/index.php/adhesion">Services d'adhésion</a></li>
-                    <li><a href="/index.php/biens">Nos biens</a></li>
-                    <li><a href="/index.php/partenaires">Partenaires</a></li>
-                    <li><a href="/index.php/contact">Contact</a></li>
+                    <li><a href="/public/">Accueil</a></li>
+                    <li><a href="/public/actualites">Actualités</a></li>
+                    <li><a href="/public/adhesion">Services d'adhésion</a></li>
+                    <li><a href="/public/biens">Nos biens</a></li>
+                    <li><a href="/public/partenaires">Partenaires</a></li>
+                    <li><a href="/public/contact">Contact</a></li>
                 </ul>
                 <div class="burger">
                     <div class="line1"></div>

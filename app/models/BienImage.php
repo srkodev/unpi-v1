@@ -43,4 +43,12 @@ class BienImage extends BaseModel
         $result = $stmt->fetch();
         return $result ?: null;
     }
+
+    public static function getById(int $id): ?array
+    {
+        $stmt = self::$db->prepare("SELECT * FROM " . self::TABLE . " WHERE id = ? LIMIT 1");
+        $stmt->execute([$id]);
+        $result = $stmt->fetch();
+        return $result ?: null;
+    }
 }

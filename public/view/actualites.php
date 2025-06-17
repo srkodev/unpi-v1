@@ -39,9 +39,13 @@ $actualites_page = array_slice($actualites, $debut, $actualites_par_page);
                             <div class="news-image">
                                 <?php
                                 $image = ActualiteImage::getPrimaryImage($actualite['id']);
-                                $imageUrl = $image ? $image['url'] : 'https://picsum.photos/800/600?random=' . $actualite['id'];
+                                if ($image) {
+                                    $imageUrl = '/' . $image['url']; // Format: /uploads/actualites/filename.jpg
+                                } else {
+                                    $imageUrl = 'https://picsum.photos/800/600?random=' . $actualite['id'];
+                                }
                                 ?>
-                                <img src="<?= $imageUrl ?>" alt="<?= htmlspecialchars($actualite['titre']) ?>">
+                                <img src="<?= $imageUrl ?>" alt="<?= htmlspecialchars($actualite['titre']) ?>" loading="lazy">
                             </div>
                             <div class="news-content">
                                 <div class="news-meta">
