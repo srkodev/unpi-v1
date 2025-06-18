@@ -56,7 +56,7 @@ $biens_page = array_slice($biens, $debut, $biens_par_page);
                                 <?php
                                 $image = BienImage::getPrimaryImage($bien['id']);
                                 if ($image) {
-                                    $imageUrl = '/' . $image['url']; // Format: /uploads/biens/filename.jpg
+                                    $imageUrl = $image['url']; // Format: /uploads/biens/filename.jpg
                                 } else {
                                     $imageUrl = 'https://picsum.photos/800/600?random=' . $bien['id'];
                                 }

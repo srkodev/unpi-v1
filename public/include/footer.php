@@ -17,6 +17,7 @@
                     <p><a href="/public/biens"><i class="fas fa-home"></i> Biens immobiliers</a></p>
                     <p><a href="/public/actualites"><i class="fas fa-newspaper"></i> Actualités</a></p>
                     <p><a href="/public/adhesion"><i class="fas fa-user-plus"></i> Adhésion</a></p>
+                    <p><a href="espace-adherent-login.php"><i class="fas fa-users"></i> Espace adhérent</a></p>
                 </div>
                 <div class="footer-section">
                     <h3>Suivez-nous</h3>

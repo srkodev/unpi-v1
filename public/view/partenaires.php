@@ -32,7 +32,7 @@ $partenaires = Partenaire::getAll();
                     <div class="partenaire-card">
                         <?php if (!empty($partenaire['logo_url'])): ?>
                             <div class="partenaire-logo">
-                                <img src="<?php echo htmlspecialchars($partenaire['logo_url']); ?>" 
+                                <img src="/<?php echo htmlspecialchars($partenaire['logo_url']); ?>" 
                                      alt="Logo <?php echo htmlspecialchars($partenaire['nom']); ?>">
                             </div>
                         <?php endif; ?>

@@ -249,53 +249,51 @@ class AdminBienController
     {
         try {
             BienImage::setPrimary($bienId, $imageId);
-            $_SESSION['success'] = "L'image principale a été mise à jour avec succès.";
+            error_log("Image principale mise à jour avec succès. Bien ID: $bienId, Image ID: $imageId");
         } catch (PDOException $e) {
-            $_SESSION['error'] = "Erreur lors de la mise à jour de l'image principale.";
             error_log("Erreur setPrimaryImage: " . $e->getMessage());
+            throw new \Exception("Erreur lors de la mise à jour de l'image principale: " . $e->getMessage());
         }
-        
-        header("Location: /index.php/admin/biens/edit/" . $bienId);
-        exit;
     }
 
     public function deleteImage(int $bienId, int $imageId): void
     {
-        try {
-            // Récupérer les détails de l'image avant suppression
-            $image = BienImage::getById($imageId);
-            
-            if (!$image || $image['bien_id'] != $bienId) {
-                throw new \Exception('Image non trouvée');
-            }
+        // Récupérer les détails de l'image avant suppression
+        $image = BienImage::getById($imageId);
+        
+        if (!$image || $image['bien_id'] != $bienId) {
+            throw new \Exception('Image non trouvée');
+        }
 
-            // Supprimer le fichier physique
-            $filePath = PUBLIC_PATH . $image['url'];
-            if (file_exists($filePath)) {
-                unlink($filePath);
-                error_log("Fichier supprimé: " . $filePath);
-            }
-
-            // Supprimer l'entrée dans la base de données
-            if (BienImage::delete($imageId)) {
-                error_log("Image supprimée de la base de données. ID: " . $imageId);
-                
-                // Si c'était l'image principale, définir une nouvelle image principale
-                if ($image['is_primary']) {
-                    $otherImages = BienImage::listByBien($bienId);
-                    if (!empty($otherImages)) {
-                        BienImage::setPrimary($bienId, $otherImages[0]['id']);
-                        error_log("Nouvelle image principale définie: " . $otherImages[0]['id']);
-                    }
-                }
-                
-                $_SESSION['success'] = 'Image supprimée avec succès';
+        // Supprimer le fichier physique
+        $filePath = PUBLIC_PATH . $image['url'];
+        error_log("Tentative de suppression du fichier: " . $filePath);
+        
+        if (file_exists($filePath)) {
+            if (unlink($filePath)) {
+                error_log("Fichier supprimé avec succès: " . $filePath);
             } else {
-                throw new \Exception('Erreur lors de la suppression de l\'image');
+                error_log("ERREUR: Impossible de supprimer le fichier: " . $filePath);
+                throw new \Exception('Impossible de supprimer le fichier physique');
             }
-        } catch (\Exception $e) {
-            error_log("Erreur lors de la suppression de l'image: " . $e->getMessage());
-            $_SESSION['error'] = 'Erreur lors de la suppression de l\'image: ' . $e->getMessage();
+        } else {
+            error_log("ATTENTION: Fichier non trouvé: " . $filePath);
+        }
+
+        // Supprimer l'entrée dans la base de données
+        if (BienImage::delete($imageId)) {
+            error_log("Image supprimée de la base de données. ID: " . $imageId);
+            
+            // Si c'était l'image principale, définir une nouvelle image principale
+            if ($image['is_primary']) {
+                $otherImages = BienImage::listByBien($bienId);
+                if (!empty($otherImages)) {
+                    BienImage::setPrimary($bienId, $otherImages[0]['id']);
+                    error_log("Nouvelle image principale définie: " . $otherImages[0]['id']);
+                }
+            }
+        } else {
+            throw new \Exception('Erreur lors de la suppression de l\'image en base de données');
         }
     }
 

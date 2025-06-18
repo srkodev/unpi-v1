@@ -121,7 +121,7 @@
                 <div class="gallery">
                     <?php foreach ($images as $image): ?>
                     <div>
-                        <img src="/<?= htmlspecialchars($image['url']) ?>" 
+                        <img src="<?= htmlspecialchars($image['url']) ?>" 
                              alt="Image du bien" 
                              class="<?= $image['is_primary'] ? 'primary' : '' ?>"
                              title="<?= $image['is_primary'] ? 'Image principale' : '' ?>">

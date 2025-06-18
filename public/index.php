@@ -37,6 +37,11 @@ switch ($uri) {
         require __DIR__ . '/view/actualite-detail.php';
         break;
 
+    case (preg_match('/^\/actualite\/(\d+)$/', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        require __DIR__ . '/view/actualite-detail.php';
+        break;
+
     case '/adhesion':
         require __DIR__ . '/view/adhesion.php';
         break;
@@ -66,12 +71,21 @@ switch ($uri) {
         break;
 
     case '/contact':
-        require __DIR__ . '/view/contact.php';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Traitement du formulaire de contact via AJAX
+            $controller = new \App\Controller\ContactController();
+            $controller->sendMessage();
+        } else {
+            // Affichage de la page de contact
+            require __DIR__ . '/view/contact.php';
+        }
         break;
 
     case '/mentions-legales':
         require __DIR__ . '/view/mentions-legales.php';
         break;
+
+
 
     // Routes d'administration
     case '/admin/login':
@@ -203,17 +217,29 @@ switch ($uri) {
 
     // Routes pour la gestion des images des biens
     case (preg_match('/^\/admin\/biens\/(\d+)\/image\/(\d+)\/delete$/', $uri, $matches) ? true : false):
-        $controller = new \App\Controller\AdminBienController();
-        $controller->deleteImage($matches[1], $matches[2]);
-        header('Content-Type: application/json');
-        echo json_encode(['success' => true]);
+        try {
+            $controller = new \App\Controller\AdminBienController();
+            $controller->deleteImage($matches[1], $matches[2]);
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true]);
+        } catch (\Exception $e) {
+            error_log("Erreur lors de la suppression d'image: " . $e->getMessage());
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
         break;
 
     case (preg_match('/^\/admin\/biens\/(\d+)\/image\/(\d+)\/primary$/', $uri, $matches) ? true : false):
-        $controller = new \App\Controller\AdminBienController();
-        $controller->setPrimaryImage($matches[1], $matches[2]);
-        header('Content-Type: application/json');
-        echo json_encode(['success' => true]);
+        try {
+            $controller = new \App\Controller\AdminBienController();
+            $controller->setPrimaryImage($matches[1], $matches[2]);
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true]);
+        } catch (\Exception $e) {
+            error_log("Erreur lors de la définition de l'image principale: " . $e->getMessage());
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
         break;
 
     default:

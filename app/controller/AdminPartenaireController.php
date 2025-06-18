@@ -45,6 +45,7 @@ class AdminPartenaireController extends AdminController
             
             $data = [
                 'nom' => $_POST['nom'] ?? '',
+                'description' => $_POST['description'] ?? '',
                 'site_url' => $_POST['site_url'] ?? ''
             ];
             
@@ -89,6 +90,7 @@ class AdminPartenaireController extends AdminController
             
             $data = [
                 'nom' => $_POST['nom'] ?? '',
+                'description' => $_POST['description'] ?? '',
                 'site_url' => $_POST['site_url'] ?? ''
             ];
             

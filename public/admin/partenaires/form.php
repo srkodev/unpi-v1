@@ -34,23 +34,15 @@ if (isset($_GET['id'])) {
     }
 }
 
-// Form Processing
+// Form Processing - Use the controller methods
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = [
-        'nom' => $_POST['nom'] ?? '',
-        'description' => $_POST['description'] ?? '',
-        'logo_url' => $_POST['logo_url'] ?? '',
-        'site_url' => $_POST['site_url'] ?? ''
-    ];
-
     try {
         if ($isEdit) {
-            Partenaire::update($id, $data);
+            $controller->edit($id);
         } else {
-            Partenaire::create($data);
+            $controller->create();
         }
-        header('Location: /index.php/admin/partenaires');
-        exit;
+        // Controller will handle redirect
     } catch (Exception $e) {
         $error = "Une erreur est survenue : " . $e->getMessage();
     }

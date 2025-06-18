@@ -1,3 +1,25 @@
+<?php
+require_once __DIR__ . '/../../app/config/autoload.php';
+require_once __DIR__ . '/../../app/config/config.php';
+
+use App\Models\Actualite;
+use App\Models\ActualiteImage;
+
+// Récupérer l'ID de l'actualité depuis l'URL
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+// Récupérer les détails de l'actualité
+$actualite = Actualite::getById($id);
+
+// Rediriger si l'actualité n'existe pas
+if (!$actualite) {
+    header('Location: /actualites');
+    exit;
+}
+
+// Récupérer les images de l'actualité
+$images = ActualiteImage::listByActualite($id);
+?>
 <?php include __DIR__ . '/../include/header.php'; ?>
 
     <main>
@@ -18,7 +40,7 @@
                         <div class="swiper-wrapper">
                             <?php foreach ($images as $image): ?>
                                 <div class="swiper-slide">
-                                    <img src="<?= htmlspecialchars($image['url']) ?>" alt="<?= htmlspecialchars($actualite['titre']) ?>">
+                                    <img src="/<?=htmlspecialchars($image['url']) ?>" alt="<?= htmlspecialchars($actualite['titre']) ?>">
                                 </div>
                             <?php endforeach; ?>
                         </div>

@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $filePath = $uploadDir . $fileName;
                     
                     if (move_uploaded_file($tmp_name, $filePath)) {
-                        $imageUrl = '/public/uploads/biens/' . $fileName;
+                        $imageUrl = '/uploads/biens/' . $fileName;
                         BienImage::add($bienId, $imageUrl, $key === 0);
                     }
                 }
@@ -272,7 +272,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <?php foreach ($images as $image): ?>
                                             <div class="col-md-4 mb-3">
                                                                                         <div class="image-container">
-                                            <img src="/<?php echo htmlspecialchars($image['url']); ?>" 
+                                            <img src="<?php echo htmlspecialchars($image['url']); ?>" 
                                                  class="img-thumbnail" 
                                                  alt="Image du bien">
                                             <div class="image-actions">

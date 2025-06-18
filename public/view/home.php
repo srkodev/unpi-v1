@@ -28,7 +28,7 @@
                 </div>
                 <div class="president-content">
                     <div class="president-image">
-                        <img src="asset/img/image.png" alt="Denis LAPÔTRE - Président UNPI 10">
+                        <img src="/asset/img/image.png" alt="Denis LAPÔTRE - Président UNPI 10">
                     </div>
                     <div class="presentation-content">
                         <p>Le nouveau Diagnostic de performance énergétique DPE génère un million de logements vacants en France. Il en aura 7 à 8 millions en 2034.</p>

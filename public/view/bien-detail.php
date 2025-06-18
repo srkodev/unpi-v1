@@ -46,7 +46,7 @@ $primaryImage = BienImage::getPrimaryImage($id);
                 <div class="swiper-wrapper">
                     <?php foreach ($images as $image): ?>
                     <div class="swiper-slide">
-                        <img src="/<?php echo htmlspecialchars($image['url']); ?>" alt="Image du bien" loading="lazy">
+                        <img src="<?php echo htmlspecialchars($image['url']); ?>" alt="Image du bien" loading="lazy">
                     </div>
                     <?php endforeach; ?>
                 </div>
