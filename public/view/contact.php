@@ -19,29 +19,28 @@
                             <i class="fas fa-map-marker-alt"></i>
                             <div>
                                 <h4>Adresse</h4>
-                                <p>123 Rue Principale, 10000 Troyes</p>
+                                <p>20 Rue Général de Gaulle, 10000 Troyes</p>
                             </div>
                         </div>
                         <div class="info-item">
                             <i class="fas fa-phone"></i>
                             <div>
                                 <h4>Téléphone</h4>
-                                <p>03 25 XX XX XX</p>
+                                <p>03 25 73 01 19</p>
                             </div>
                         </div>
                         <div class="info-item">
                             <i class="fas fa-envelope"></i>
                             <div>
                                 <h4>Email</h4>
-                                <p>contact@fdpci-aube.fr</p>
+                                <p>chambredesproprietaires10@gmail.com</p>
                             </div>
                         </div>
                         <div class="info-item">
                             <i class="fas fa-clock"></i>
                             <div>
                                 <h4>Horaires</h4>
-                                <p>Lundi - Vendredi: 9h00 - 17h00</p>
-                                <p>Samedi: 9h00 - 12h00</p>
+                                                <p>Lundi, mardi, jeudi, vendredi: 14h00 - 18h00</p>
                             </div>
                         </div>
                     </div>

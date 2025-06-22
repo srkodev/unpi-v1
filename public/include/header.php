@@ -20,7 +20,7 @@
                 <ul class="nav-links">
                     <li><a href="/public/">Accueil</a></li>
                     <li><a href="/public/actualites">Actualités</a></li>
-                    <li><a href="/public/adhesion">Services d'adhésion</a></li>
+                                            <li><a href="/public/adhesion">Adhésion</a></li>
                     <li><a href="/public/biens">Nos biens</a></li>
                     <li><a href="/public/partenaires">Partenaires</a></li>
                     <li><a href="/public/contact">Contact</a></li>

@@ -34,8 +34,8 @@
                         <h3>1. Nous contacter</h3>
                         <p>Appelez-nous ou envoyez-nous un email pour manifester votre intérêt d'adhésion</p>
                         <div style="margin-top: 1rem;">
-                            <p><strong>📞 03 25 XX XX XX</strong></p>
-                            <p><strong>✉️ contact@fdpci-aube.fr</strong></p>
+                            <p><strong>📞 03 25 73 01 19</strong></p>
+<p><strong>✉️ chambredesproprietaires10@gmail.com</strong></p>
                         </div>
                     </div>
                     <div class="service-card">
@@ -65,51 +65,7 @@
             </div>
         </section>
 
-        <section class="president-section">
-            <div class="container">
-                <div class="president-section-title">
-                    <h2>Venez nous rencontrer</h2>
-                </div>
-                <div class="president-content">
-                    <div class="president-image">
-                        <div style="background-color: #f8f9fa; padding: 2rem; border-radius: 8px; text-align: center;">
-                            <i class="fas fa-building" style="font-size: 4rem; color: #2c3e50; margin-bottom: 1rem;"></i>
-                            <h3 style="color: #2c3e50; margin-bottom: 1rem;">Notre adresse</h3>
-                            <p style="font-size: 1.1rem; line-height: 1.6;">
-                                <strong>FDPCI - Aube</strong><br>
-                                123 Rue Principale<br>
-                                10000 Troyes<br>
-                                France
-                            </p>
-                        </div>
-                    </div>
-                    <div class="presentation-content">
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #2c3e50; margin-bottom: 1rem;">
-                                <i class="fas fa-clock"></i> Horaires d'ouverture
-                            </h3>
-                            <p style="line-height: 1.8;">
-                                <strong>Lundi - Vendredi</strong><br>
-                                9h00 - 12h00 / 14h00 - 17h00<br><br>
-                                <strong>Samedi</strong><br>
-                                9h00 - 12h00
-                            </p>
-                        </div>
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #2c3e50; margin-bottom: 1rem;">
-                                <i class="fas fa-phone-alt"></i> Contact direct
-                            </h3>
-                            <p style="line-height: 1.8;">
-                                <i class="fas fa-phone"></i> <strong>03 25 XX XX XX</strong><br>
-                                <i class="fas fa-envelope"></i> <strong>contact@fdpci-aube.fr</strong><br>
-                                <i class="fas fa-fax"></i> <strong>03 25 XX XX XX</strong><br>
-                                <i class="fas fa-globe"></i> <strong>www.fdpci-aube.fr</strong>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+
 
         <section class="public-services-section" style="margin-bottom: 4rem;">
             <div class="container">
@@ -125,7 +81,7 @@
                         <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem;">Votre adhésion vous permettra de mieux assurer l'avenir de votre patrimoine, de mieux gérer celui-ci, d'être conseillé et défendu.</p>
                         <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
                             <a href="/contact" class="btn btn-primary" style="padding: 0.8rem 2rem; font-size: 1.1rem;">Nous contacter</a>
-                            <a href="tel:0325XXXXXX" class="btn btn-secondary" style="padding: 0.8rem 2rem; font-size: 1.1rem;">03 25 XX XX XX</a>
+                            <a href="tel:0325730119" class="btn btn-secondary" style="padding: 0.8rem 2rem; font-size: 1.1rem;">03 25 73 01 19</a>
                         </div>
                     </div>
                 </div>

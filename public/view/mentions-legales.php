@@ -16,9 +16,9 @@
                 <h3>Éditeur du site</h3>
                 <p>Fédération Départementale des Propriétaires et Copropriétaires Immobiliers de l'Aube (FDPCI)</p>
                 <p>Association loi 1901</p>
-                <p>123 Rue Principale, 10000 Troyes</p>
-                <p>Téléphone : 03 25 XX XX XX</p>
-                <p>Email : contact@fdpci-aube.fr</p>
+                <p>20 Rue Général de Gaulle, 10000 Troyes</p>
+<p>Téléphone : 03 25 73 01 19</p>
+<p>Email : chambredesproprietaires10@gmail.com</p>
 
                 <h3>Directeur de la publication</h3>
                 <p>Jean Dupont, Président de la FDPCI</p>

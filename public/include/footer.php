@@ -3,21 +3,20 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>Contact</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> 123 Rue Principale, 10000 Troyes</p>
-                    <p><i class="fas fa-phone"></i> 03 25 XX XX XX</p>
-                    <p><i class="fas fa-envelope"></i> contact@fdpci-aube.fr</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 20 Rue Général de Gaulle, 10000 Troyes</p>
+                    <p><i class="fas fa-phone"></i> 03 25 73 01 19</p>
+                    <p><i class="fas fa-envelope"></i> chambredesproprietaires10@gmail.com</p>
                 </div>
                 <div class="footer-section">
                     <h3>Horaires</h3>
-                    <p><i class="fas fa-clock"></i> Lundi - Vendredi: 9h00 - 17h00</p>
-                    <p><i class="fas fa-clock"></i> Samedi: 9h00 - 12h00</p>
+                    <p><i class="fas fa-clock"></i> Lundi, mardi, jeudi, vendredi: 14h00 - 18h00</p>
                 </div>
                 <div class="footer-section">
                     <h3>Liens rapides</h3>
                     <p><a href="/public/biens"><i class="fas fa-home"></i> Biens immobiliers</a></p>
                     <p><a href="/public/actualites"><i class="fas fa-newspaper"></i> Actualités</a></p>
                     <p><a href="/public/adhesion"><i class="fas fa-user-plus"></i> Adhésion</a></p>
-                    <p><a href="espace-adherent-login.php"><i class="fas fa-users"></i> Espace adhérent</a></p>
+                    <p><a href="/espace-adherent-login.php"><i class="fas fa-users"></i> Espace adhérent</a></p>
                 </div>
                 <div class="footer-section">
                     <h3>Suivez-nous</h3>
