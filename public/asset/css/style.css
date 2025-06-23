@@ -213,7 +213,7 @@ img {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('/asset/img/hero.jpg') center/cover;
+    background: url('../img/hero.jpg') center/cover;
     opacity: 0.2;
 }
 
@@ -1345,7 +1345,7 @@ img {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('/asset/img/hero.jpg') center/cover;
+    background: url('../img/hero.jpg') center/cover;
     opacity: 0.1;
 }
 
