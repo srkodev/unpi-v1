@@ -100,4 +100,24 @@ public/uploads/
 - `POST /admin/biens/{id}/image/{id}/delete` : Suppression d'image
 - `POST /admin/biens/{id}/image/{id}/primary` : Définir image principale
 - `POST /admin/actualites/{id}/image/{id}/delete` : Suppression d'image actualité
-- `POST /admin/actualites/{id}/image/{id}/primary` : Définir image principale actualité 
+- `POST /admin/actualites/{id}/image/{id}/primary` : Définir image principale actualité
+
+## 📝 Notes récents
+
+### 2025-01-31 - Correction de l'autoloader
+
+#### ✅ Problème résolu : Classe BaseModel non trouvée
+- [x] Erreur `PHP Fatal error: Class "App\Models\BaseModel" not found`
+- [x] Problème dans le mapping namespace -> structure de dossiers
+- [x] L'autoloader cherchait `app/Models/` mais les dossiers sont en minuscules `app/models/`
+- [x] Ajout d'un mapping spécifique pour `Models\` -> `models/`, `Controller\` -> `controller/`
+- [x] Test et validation du fonctionnement
+
+#### ✅ Remplacement des images hero et correction du menu mobile
+- [x] Remplacement des URLs Picsum par l'image locale `hero.jpg`
+- [x] Mise à jour de `.hero::after` dans le CSS pour utiliser `/asset/img/hero.jpg`
+- [x] Implémentation du JavaScript pour le menu mobile dans `main.js`
+- [x] Correction du chemin du script dans `footer.php` (`/asset/js/main.js`)
+- [x] Ajout de fonctionnalités bonus : animations, smooth scroll, filtres
+- [x] Gestion responsive du menu burger avec animations CSS
+- [x] Fermeture automatique du menu mobile (clic extérieur, redimensionnement) 

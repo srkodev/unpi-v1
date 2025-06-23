@@ -213,7 +213,7 @@ img {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('https://picsum.photos/1920/1080?random=12') center/cover;
+    background: url('/asset/img/hero.jpg') center/cover;
     opacity: 0.2;
 }
 
@@ -1345,7 +1345,7 @@ img {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('https://picsum.photos/1920/1080?random=5') center/cover;
+    background: url('/asset/img/hero.jpg') center/cover;
     opacity: 0.1;
 }
 

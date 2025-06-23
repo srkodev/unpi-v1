@@ -4,16 +4,16 @@
 -- ============================================================
 
 -- ---------- Base de données ----------
-DROP DATABASE IF EXISTS fdpci;
-CREATE DATABASE fdpci
+DROP DATABASE IF EXISTS cspi;
+CREATE DATABASE cspi
   DEFAULT CHARACTER SET utf8mb4
   DEFAULT COLLATE utf8mb4_unicode_ci;
-USE fdpci;
+USE cspi;
 
 -- ---------- Utilisateur dédié ----------
-DROP USER IF EXISTS 'fdpci_user'@'localhost';
-CREATE USER 'fdpci_user'@'localhost' IDENTIFIED BY 'ChangeMe#2025';
-GRANT ALL PRIVILEGES ON fdpci.* TO 'fdpci_user'@'localhost';
+DROP USER IF EXISTS 'cspi_user'@'localhost';
+CREATE USER 'cspi_user'@'localhost' IDENTIFIED BY 'wDq0XAXc8XW2EvYL';
+GRANT ALL PRIVILEGES ON cspi.* TO 'cspi_user'@'localhost';
 FLUSH PRIVILEGES;
 
 -- ============================================================
@@ -104,5 +104,5 @@ CREATE TABLE administrateurs (
 -- ---------- Ajout d'un administrateur par défaut ----------
 -- Attention : Ce compte est à modifier en production !
 INSERT INTO administrateurs (email, password, created_at) 
-VALUES ('admin@fdcpi.fr', '$2y$10$4lUI1bcEix1hPpxYy9ZxweiXWo8ZJLbnay7xN5rB2hg1Lpp470M/e', NOW());
+VALUES ('chambredesproprietaires10@gmail.com', '$2y$10$KIfSExVjxjUwqGcjNNTZjOBglR6zKwzDZXJ0clB6eT6nM7ClXErbq', NOW());
 -- Le mot de passe haché correspond à 'admin'
