@@ -93,6 +93,13 @@
 - [x] Gestion des fallbacks pour toutes les données SEO
 - [x] Échappement approprié des données pour éviter les failles XSS
 
+#### ✅ Mise à jour du footer et réseaux sociaux
+- [x] Mise à jour du lien Facebook vers la page officielle CSPI10
+- [x] Suppression temporaire du lien Instagram
+- [x] Ajout d'un label aria pour l'accessibilité du lien Facebook
+- [x] Correction du copyright : 2025 CSPI10 (au lieu de 2024 FDPCI)
+- [x] Maintien de la sécurité avec `rel="noopener noreferrer"`
+
 ## 🚀 Fonctionnalités ajoutées
 
 ### Gestion complète des images des biens immobiliers
