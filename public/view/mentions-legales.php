@@ -14,19 +14,19 @@
                 <h2>Informations légales</h2>
                 
                 <h3>Éditeur du site</h3>
-                <p>Fédération Départementale des Propriétaires et Copropriétaires Immobiliers de l'Aube (FDPCI)</p>
+                <p>Chambre Syndicale des Propriétaires Immobiliers de l'Aube (CSPI10)</p>
                 <p>Association loi 1901</p>
                 <p>20 Rue Général de Gaulle, 10000 Troyes</p>
-<p>Téléphone : 03 25 73 01 19</p>
-<p>Email : chambredesproprietaires10@gmail.com</p>
+                <p>Téléphone : 03 25 73 01 19</p>
+                <p>Email : chambredesproprietaires10@gmail.com</p>
 
                 <h3>Directeur de la publication</h3>
-                <p>Jean Dupont, Président de la FDPCI</p>
+                <p>Denis LAPÔTRE, Président de la CSPI10</p>
 
                 <h3>Hébergement</h3>
-                <p>Nom de l'hébergeur</p>
-                <p>Adresse de l'hébergeur</p>
-                <p>Téléphone : XX XX XX XX XX</p>
+                <p>Jules Crevoisier</p>
+                <p>21 bis, rue de Beauregard, Bâtiment D</p>
+                <p>Téléphone : +33 7 87 35 96 48</p>
 
                 <h3>Propriété intellectuelle</h3>
                 <p>L'ensemble de ce site relève de la législation française et internationale sur le droit d'auteur et la propriété intellectuelle. Tous les droits de reproduction sont réservés, y compris pour les documents téléchargeables et les représentations iconographiques et photographiques.</p>
@@ -41,7 +41,7 @@
                 <p>La création de liens hypertextes vers le présent site est soumise à l'accord préalable du directeur de la publication.</p>
 
                 <h3>Crédits</h3>
-                <p>Conception et réalisation : [Nom de l'agence]</p>
+                <p>Conception et réalisation : Vosoft</p>
                 <p>Images : Picsum Photos</p>
                 <p>Icônes : Font Awesome</p>
             </div>

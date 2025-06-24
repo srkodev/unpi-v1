@@ -104,6 +104,19 @@ public/uploads/
 
 ## 📝 Notes récents
 
+### 2025-01-31 - Mise à jour des mentions légales
+
+#### ✅ Mise à jour des informations d'hébergement
+- [x] Remplacement des informations génériques d'hébergeur par les vraies données
+- [x] Ajout des coordonnées de Jules Crevoisier (21 bis, rue de Beauregard, Bâtiment D, +33 7 87 35 96 48)
+- [x] Mise à jour du fichier `public/view/mentions-legales.php`
+
+#### ✅ Correction des informations du président
+- [x] Mise à jour du nom du directeur de publication : Denis LAPÔTRE dans les mentions légales
+- [x] Changement de "UNPI 10" vers "CSPI 10" dans l'édito du président (page d'accueil)
+- [x] Mise à jour de l'attribut alt de l'image du président
+- [x] Correction de la signature du président
+
 ### 2025-01-31 - Correction de l'autoloader
 
 #### ✅ Problème résolu : Classe BaseModel non trouvée

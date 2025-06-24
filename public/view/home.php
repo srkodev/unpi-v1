@@ -28,14 +28,14 @@
                 </div>
                 <div class="president-content">
                     <div class="president-image">
-                        <img src="/asset/img/image.png" alt="Denis LAPÔTRE - Président UNPI 10">
+                        <img src="/asset/img/image.png" alt="Denis LAPÔTRE - Président CSPI 10">
                     </div>
                     <div class="presentation-content">
                         <p>Le nouveau Diagnostic de performance énergétique DPE génère un million de logements vacants en France. Il en aura 7 à 8 millions en 2034.</p>
                         <p>On perdra 50% du parc locatif dans l'Aube. On est devant une crise immobilière. Quel avenir pour ceux qui ont investi dans l'espoir de se constituer un complément de retraite ou un petit patrimoine à transmettre à leur enfants.</p>
-                        <p>L'UNPI, au niveau national, discute avec le gouvernement pour qu'il adapte le dispositif. On lui demande de revoir le mode de calcul du DPE et de doubler le plafonds des déficits fonciers pour permettre aux propriétaires de financer les travaux.</p>
+                        <p>La CSPI, au niveau national, discute avec le gouvernement pour qu'il adapte le dispositif. On lui demande de revoir le mode de calcul du DPE et de doubler le plafonds des déficits fonciers pour permettre aux propriétaires de financer les travaux.</p>
                         <p>Il faut se mobiliser !</p>
-                        <p class="signature"><em>Denis LAPÔTRE, Président UNPI 10</em></p>
+                        <p class="signature"><em>Denis LAPÔTRE, Président CSPI 10</em></p>
                     </div>
                 </div>
             </div>
