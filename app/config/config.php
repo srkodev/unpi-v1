@@ -14,7 +14,7 @@ const DB_PASS = 'ChangeMe#2025';
 // Configuration Resend pour l'envoi d'emails
 define('RESEND_API_KEY', $_ENV['RESEND_API_KEY'] ?? 're_dASj4Azj_H1HzdTTYwKdpdtuE3cRqqRcb');
 define('CONTACT_FROM_EMAIL', $_ENV['CONTACT_FROM_EMAIL'] ?? 'no-reply@vosoft.fr');
-define('CONTACT_TO_EMAIL', $_ENV['CONTACT_TO_EMAIL'] ?? 'srko.dj@gmail.com'); // CHANGEZ CET EMAIL
+define('CONTACT_TO_EMAIL', $_ENV['CONTACT_TO_EMAIL'] ?? 'chambredesproprietaires10@gmail.com '); // CHANGEZ CET EMAIL
 define('CONTACT_FROM_NAME', $_ENV['CONTACT_FROM_NAME'] ?? 'Site FDPCI Aube');
 
 try {
