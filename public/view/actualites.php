@@ -50,7 +50,7 @@ $actualites_page = array_slice($actualites, $debut, $actualites_par_page);
                             <div class="news-content">
                                 <div class="news-meta">
                                     <span class="news-category"><?= ucfirst($actualite['categorie']) ?></span>
-                                    <span class="news-date"><?= date('d F Y', strtotime($actualite['publie_le'])) ?></span>
+                                    <span class="news-date"><?= formatDateFrench($actualite['publie_le']) ?></span>
                                 </div>
                                 <h3 class="news-title"><?= htmlspecialchars($actualite['titre']) ?></h3>
                                 <p class="news-excerpt"><?= htmlspecialchars($actualite['extrait']) ?></p>
@@ -153,6 +153,47 @@ document.addEventListener('DOMContentLoaded', function() {
     color: var(--text-color);
     font-size: 1.1rem;
     margin: 0;
+}
+
+/* Styles responsive copiés de biens.php */
+@media (max-width: 1200px) {
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .filters {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .news-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .news-card .news-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .news-grid {
+        gap: 1rem;
+    }
+    
+    .pagination {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .page-btn {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
 }
 </style>
 </body>

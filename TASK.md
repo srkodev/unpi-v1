@@ -2,6 +2,21 @@
 
 ## ✅ Tâches complétées
 
+### 2025-01-31 - Améliorations des actualités - Formatage de date et responsive
+
+#### ✅ Formatage des dates en français
+- [x] Création de la fonction `formatDateFrench()` dans `/app/config/helpers.php`
+- [x] Intégration de la fonction dans l'autoloader
+- [x] Mise à jour de la page `actualites.php` pour utiliser les dates en français
+- [x] Mise à jour de la page `actualite-detail.php` pour utiliser les dates en français
+- [x] Style de la date en blanc dans le header de `actualite-detail.php`
+
+#### ✅ Améliorations responsive
+- [x] Ajout des styles responsive copiés de `biens.php` vers `actualites.php`
+- [x] Gestion responsive des filtres et grille d'actualités
+- [x] Amélioration de l'affichage mobile pour la pagination
+- [x] Optimisation des métadonnées des actualités pour mobile
+
 ### 2025-01-27 - Amélioration de la gestion des images
 
 #### ✅ Corrections du schema SQL

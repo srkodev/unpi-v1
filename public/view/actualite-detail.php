@@ -28,7 +28,7 @@ $images = ActualiteImage::listByActualite($id);
                 <h1><?= htmlspecialchars($actualite['titre']) ?></h1>
                 <div class="news-meta">
                     <span class="news-category"><?= ucfirst($actualite['categorie']) ?></span>
-                    <span class="news-date"><?= date('d F Y', strtotime($actualite['publie_le'])) ?></span>
+                    <span class="news-date white-date"><?= formatDateFrench($actualite['publie_le']) ?></span>
                 </div>
             </div>
         </section>
@@ -141,6 +141,11 @@ $images = ActualiteImage::listByActualite($id);
 
 .news-date {
     color: #666;
+}
+
+/* Style pour la date en blanc dans le hero */
+.hero .news-date.white-date {
+    color: white !important;
 }
 
 .swiper-button-next,
