@@ -39,6 +39,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             max-width: 400px;
             margin: 100px auto;
         }
+        
+        /* Correction pour l'affichage des erreurs - éviter le rouge sur rouge */
+        .alert-danger {
+            background-color: #f8d7da !important;
+            border-color: #f5c2c7 !important;
+            color: #721c24 !important;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .alert-success {
+            background-color: #d1e7dd !important;
+            border-color: #badbcc !important;
+            color: #0f5132 !important;
+            border-left: 4px solid #198754;
+        }
     </style>
 </head>
 <body>

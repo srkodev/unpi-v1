@@ -17,6 +17,18 @@
 - [x] Amélioration de l'affichage mobile pour la pagination
 - [x] Optimisation des métadonnées des actualités pour mobile
 
+#### ✅ Correction problème d'affichage des erreurs admin (rouge sur rouge)
+- [x] Identification du problème : `.alert-danger` avec fond rouge et texte rouge illisible
+- [x] Correction CSS dans `public/admin/biens/form.php`
+- [x] Correction CSS dans `public/admin/actualites/form.php`
+- [x] Correction CSS dans `public/admin/actualites/liste_actualites.php`
+- [x] Correction CSS dans `public/admin/partenaires/form.php`
+- [x] Correction CSS dans `public/admin/partenaires/liste_partenaires.php`
+- [x] Correction CSS dans `public/admin/login.php`
+- [x] Correction CSS dans `public/admin/admin.php`
+- [x] Création d'un fichier CSS commun `public/asset/css/admin.css` pour éviter la duplication
+- [x] Amélioration des styles d'alerte pour tous les types (success, warning, info)
+
 ### 2025-01-27 - Amélioration de la gestion des images
 
 #### ✅ Corrections du schema SQL

@@ -67,6 +67,21 @@ try {
             margin-bottom: 20px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+        
+        /* Correction pour l'affichage des erreurs - éviter le rouge sur rouge */
+        .alert-danger {
+            background-color: #f8d7da !important;
+            border-color: #f5c2c7 !important;
+            color: #721c24 !important;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .alert-success {
+            background-color: #d1e7dd !important;
+            border-color: #badbcc !important;
+            color: #0f5132 !important;
+            border-left: 4px solid #198754;
+        }
     </style>
 </head>
 <body>

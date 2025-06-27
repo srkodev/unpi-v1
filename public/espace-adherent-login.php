@@ -224,10 +224,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <i class="fas fa-arrow-left"></i> Retour au site
                 </a>
             </div>
-            
-            <div class="info-box">
-                <i class="fas fa-info-circle"></i> <strong>Mot de passe de test :</strong> adherent2025
-            </div>
         </div>
     </div>
 </body>
