@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# Fichiers et dossiers à ne pas indexer
+Disallow: /admin/
+Disallow: /app/
+Disallow: /database/
+Disallow: /lib/
+Disallow: /uploads/tmp/
+Disallow: *.php$
+
+# Autoriser l'indexation des fichiers importants
+Allow: /asset/
+Allow: /uploads/
+Allow: /public/
+
+# Sitemap
+Sitemap: https://www.cspi10.fr/sitemap.xml
+
+# Temps d'attente recommandé entre les requêtes (en secondes)
+Crawl-delay: 1 

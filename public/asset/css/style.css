@@ -92,7 +92,6 @@ img {
 }
 
 .logo img {
-    height: 50px;
     transition: transform 0.3s ease;
 }
 
@@ -192,7 +191,7 @@ img {
     justify-content: center;
     text-align: center;
     color: var(--white);
-    margin-top: 60px;
+    margin-top: 100px;
 }
 
 .hero::before {
@@ -213,7 +212,7 @@ img {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('https://picsum.photos/1920/1080?random=12') center/cover;
+    background: url('../img/hero.jpg') center/cover;
     opacity: 0.2;
 }
 
@@ -1345,7 +1344,7 @@ img {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('https://picsum.photos/1920/1080?random=5') center/cover;
+    background: url('../img/hero.jpg') center/cover;
     opacity: 0.1;
 }
 
@@ -2210,8 +2209,8 @@ img {
 }
 
 .partenaire-logo img {
-    max-width: 80%;
-    max-height: 80%;
+    width: 80%;
+    height: 80%;
     object-fit: contain;
 }
 

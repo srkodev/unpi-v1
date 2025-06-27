@@ -16,14 +16,14 @@ $partenaires = Partenaire::getAll();
     <section class="hero">
         <div class="hero-content">
             <h1>Nos Partenaires</h1>
-            <p>Découvrez nos partenaires de confiance</p>
+            <p>Découvrez nos partenaires</p>
         </div>
     </section>
 
     <section class="partenaires-section">
         <div class="container">
             <div class="partenaires-header">
-                <h1>Nos Partenaires de Confiance</h1>
+                <h1>Nos Partenaires</h1>
                 <p>Nous travaillons avec des professionnels reconnus pour vous offrir les meilleurs services</p>
             </div>
 

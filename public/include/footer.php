@@ -21,17 +21,14 @@
                 <div class="footer-section">
                     <h3>Suivez-nous</h3>
                     <div class="social-links">
-                        <a href="https://www.facebook.com/fdcpi" target="_blank" rel="noopener noreferrer">
+                        <a href="https://www.facebook.com/profile.php?id=100094259781926&locale=fr_FR" target="_blank" rel="noopener noreferrer" aria-label="Page Facebook de CSPI10">
                             <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="https://www.instagram.com/fdcpi" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-instagram"></i>
                         </a>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 FDPCI - Tous droits réservés</p>
+                <p>&copy; 2025 CSPI10 - Tous droits réservés</p>
                 <div class="footer-links">
                     <a href="/public/mentions-legales">
                         <i class="fas fa-gavel"></i> Mentions légales
@@ -47,6 +44,6 @@
         </div>
     </footer>
 
-    <script src="/public/js/main.js"></script>
+    <script src="/asset/js/main.js"></script>
 </body>
 </html> 
